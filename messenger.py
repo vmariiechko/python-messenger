@@ -8,7 +8,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.pushButton.pressed.connect(self.sendMessage)
+        self.sendButton.pressed.connect(self.sendMessage)
+        self.loginButton1.pressed.connect(self.loginUser)
         self.textEdit.installEventFilter(self)
         self.last_message_time = 0
         self.timer = QtCore.QTimer()
@@ -22,9 +23,22 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 return True
         return super().eventFilter(obj, event)
 
+    def loginUser(self):
+        username = self.loginLine1.text()
+        password = self.passwordLine1.text()
+
+        response = requests.post(
+            'http://127.0.0.1:5000/auth',
+            json={"username": username, "password": password}
+        )
+        if not response.json()['ok']:
+            return
+
+        self.stackedWidget.setCurrentIndex(1)
+
     def sendMessage(self):
-        username = self.lineEdit.text()
-        password = self.lineEdit_2.text()
+        username = self.loginLine1.text()
+        password = self.passwordLine1.text()
         text = self.textEdit.toPlainText()
 
         if not username:

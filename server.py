@@ -86,4 +86,19 @@ def sendView():
     return {'ok': True}
 
 
+@app.route("/auth", methods=['POST'])
+def authUser():
+    date = request.json   # JSON -> dict
+    username = date["username"]
+    password = date["password"]
+
+    if username in users:
+        real_password = users[username]
+        if real_password != password:
+            return {"ok": False}
+    else:
+        users[username] = password
+
+    return {'ok': True}
+
 app.run()
