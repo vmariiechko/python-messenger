@@ -66,13 +66,11 @@ def sendView():
     }
     response: {"ok": bool}
     """
-    date = request.json   # JSON -> dict
+    date = request.json
     username = date["username"]
     password = date["password"]
     text = date["text"]
 
-    # если такой пользователь существует -> проверим пароль
-    # иначе мы зарегистрируем его
     if username in users:
         real_password = users[username]
         if real_password != password:
@@ -88,7 +86,7 @@ def sendView():
 
 @app.route("/auth", methods=['POST'])
 def authUser():
-    date = request.json   # JSON -> dict
+    date = request.json
     username = date["username"]
     password = date["password"]
 
@@ -100,5 +98,6 @@ def authUser():
         users[username] = password
 
     return {'ok': True}
+
 
 app.run()

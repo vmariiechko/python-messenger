@@ -12,6 +12,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         self.loginButton1.pressed.connect(self.loginUser)
         self.textEdit.installEventFilter(self)
         self.last_message_time = 0
+        self.username = None
+        self.password = None
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.getUpdates)
         self.timer.start(1000)
@@ -24,12 +26,12 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         return super().eventFilter(obj, event)
 
     def loginUser(self):
-        username = self.loginLine1.text()
-        password = self.passwordLine1.text()
+        self.username = self.loginLine1.text()
+        self.password = self.passwordLine1.text()
 
         response = requests.post(
             'http://127.0.0.1:5000/auth',
-            json={"username": username, "password": password}
+            json={"username": self.username, "password": self.password}
         )
         if not response.json()['ok']:
             return
@@ -37,15 +39,13 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         self.stackedWidget.setCurrentIndex(1)
 
     def sendMessage(self):
-        username = self.loginLine1.text()
-        password = self.passwordLine1.text()
         text = self.textEdit.toPlainText()
 
-        if not username:
+        if not self.username:
             self.addText('ERROR: username is empty!')
             self.addText('')
             return
-        if not password:
+        if not self.password:
             self.addText('ERROR: password is empty!')
             self.addText('')
             return
@@ -56,7 +56,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
         response = requests.post(
             'http://127.0.0.1:5000/send',
-            json={"username": username, "password": password, "text": text}
+            json={"username": self.username, "password": self.password, "text": text}
         )
         if not response.json()['ok']:
             self.addText('ERROR: Access denied')
