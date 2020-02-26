@@ -27,11 +27,11 @@
      <number>0</number>
     </property>
     <widget class="QWidget" name="page">
-     <widget class="QLineEdit" name="loginLine1">
+     <widget class="QLineEdit" name="loginLine">
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>160</y>
+        <y>200</y>
         <width>291</width>
         <height>41</height>
        </rect>
@@ -48,11 +48,11 @@
        <string>Login</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="passwordLine1">
+     <widget class="QLineEdit" name="passwordLine">
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>220</y>
+        <y>270</y>
         <width>291</width>
         <height>41</height>
        </rect>
@@ -62,22 +62,25 @@
         <pointsize>14</pointsize>
        </font>
       </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
       <property name="placeholderText">
        <string>Password</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="loginButton1">
+     <widget class="QPushButton" name="loginButton">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>290</y>
-        <width>151</width>
-        <height>41</height>
+        <x>140</x>
+        <y>330</y>
+        <width>131</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>18</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="text">
@@ -100,6 +103,32 @@
       </property>
       <property name="text">
        <string>Python Messenger</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="loginError">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>180</y>
+        <width>181</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="passwordError">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>250</y>
+        <width>181</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </widget>

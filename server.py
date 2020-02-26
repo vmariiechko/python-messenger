@@ -68,15 +68,7 @@ def sendView():
     """
     date = request.json
     username = date["username"]
-    password = date["password"]
     text = date["text"]
-
-    if username in users:
-        real_password = users[username]
-        if real_password != password:
-            return {"ok": False}
-    else:
-        users[username] = password
 
     new_message = {"username": username, "text": text, "time": time.time()}
     messages.append(new_message)
