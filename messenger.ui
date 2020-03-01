@@ -18,20 +18,20 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>70</y>
       <width>410</width>
-      <height>581</height>
+      <height>511</height>
      </rect>
     </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="page">
-     <widget class="QLineEdit" name="loginLine">
+    <widget class="QWidget" name="Login_page">
+     <widget class="QLineEdit" name="loginLine1">
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>200</y>
+        <y>130</y>
         <width>291</width>
         <height>41</height>
        </rect>
@@ -48,11 +48,11 @@
        <string>Login</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="passwordLine">
+     <widget class="QLineEdit" name="passwordLine1">
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>270</y>
+        <y>200</y>
         <width>291</width>
         <height>41</height>
        </rect>
@@ -73,7 +73,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>330</y>
+        <y>260</y>
         <width>131</width>
         <height>31</height>
        </rect>
@@ -83,29 +83,27 @@
         <pointsize>16</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="text">
        <string>Log in</string>
       </property>
      </widget>
-     <widget class="QLabel" name="messengerLabel1">
+     <widget class="QLabel" name="loginError1">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>30</y>
-        <width>281</width>
-        <height>41</height>
+        <x>60</x>
+        <y>110</y>
+        <width>181</width>
+        <height>21</height>
        </rect>
       </property>
-      <property name="font">
-       <font>
-        <pointsize>24</pointsize>
-       </font>
-      </property>
       <property name="text">
-       <string>Python Messenger</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QLabel" name="loginError">
+     <widget class="QLabel" name="passwordError1">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -118,11 +116,143 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QLabel" name="passwordError">
+     <widget class="QLabel" name="signUpLabel">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>300</y>
+        <width>131</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel:hover#signUpLabel
+{
+   color:blue;
+}</string>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Sign up&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Registration_page">
+     <widget class="QLineEdit" name="loginLine2">
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>250</y>
+        <y>130</y>
+        <width>291</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Enter Your Login</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="signUpButton">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>260</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Sign Up</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="passwordLine2">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>200</y>
+        <width>291</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>Enter Your Password</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="loginLabel">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>300</y>
+        <width>171</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel:hover#loginLabel
+{
+   color:blue;
+}</string>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;I am already a member&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="loginError2">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>110</y>
+        <width>181</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="passwordError2">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>180</y>
         <width>181</width>
         <height>21</height>
        </rect>
@@ -132,12 +262,12 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_2">
+    <widget class="QWidget" name="Chat_page">
      <widget class="QTextBrowser" name="textBrowser">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>100</y>
+        <y>30</y>
         <width>371</width>
         <height>401</height>
        </rect>
@@ -152,7 +282,7 @@
       <property name="geometry">
        <rect>
         <x>320</x>
-        <y>530</y>
+        <y>460</y>
         <width>71</width>
         <height>25</height>
        </rect>
@@ -166,29 +296,11 @@
        <string>Send</string>
       </property>
      </widget>
-     <widget class="QLabel" name="messengerLabel2">
-      <property name="geometry">
-       <rect>
-        <x>70</x>
-        <y>30</y>
-        <width>281</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>24</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Python Messenger</string>
-      </property>
-     </widget>
      <widget class="QTextEdit" name="textEdit">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>520</y>
+        <y>450</y>
         <width>291</width>
         <height>41</height>
        </rect>
@@ -200,6 +312,24 @@
       </property>
      </widget>
     </widget>
+   </widget>
+   <widget class="QLabel" name="messengerLabel">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>30</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Python Messenger</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

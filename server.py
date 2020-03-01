@@ -82,14 +82,32 @@ def authUser():
     username = date["username"]
     password = date["password"]
 
-    if username in users:
-        real_password = users[username]
-        if real_password != password:
-            return {"ok": False}
-    else:
-        users[username] = password
+    if username not in users:
+        return {'exist': False, 'match': False}
 
-    return {'ok': True}
+    if users[username] != password:
+        return {'exist': True, 'match': False}
+
+    return {'exist': True, 'match': True}
+
+
+@app.route("/signup", methods=['POST'])
+def signupUser():
+    date = request.json
+    username = date["username"]
+    password = date["password"]
+
+    if len(username) not in range(2, 20, 1):
+        return {"loginOutOfRange": True}
+    elif len(password) not in range(4, 20, 1):
+        return {"loginOutOfRange": False, "passwordOutOfRange": True}
+
+    if username not in users:
+        users[username] = password
+    else:
+        return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
+
+    return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': True}
 
 
 app.run()
