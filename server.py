@@ -11,7 +11,8 @@ messages = [
 users = {
     # username: password
     'Jack': '12345',
-    'Mary': '54321'
+    'Mary': '54321',
+    'Admin': 'admin'
 }
 
 
@@ -97,7 +98,7 @@ def signupUser():
     username = date["username"]
     password = date["password"]
 
-    if len(username) not in range(2, 20, 1):
+    if len(username) not in range(4, 20, 1):
         return {"loginOutOfRange": True}
     elif len(password) not in range(4, 20, 1):
         return {"loginOutOfRange": False, "passwordOutOfRange": True}

@@ -26,13 +26,13 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             "invalidLogin": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Username '
                             'doesn\'t exist</span></p></body></html> ',
             "loginOutOfRange": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Username '
-                               'must be between 2 and 20 in length</span></p></body></html> ',
+                               'must be between 4 and 20 in length</span></p></body></html> ',
             "passwordRequired": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password is '
                                 'required</span></p></body></html> ',
             "invalidPassword": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password '
                                'doesn\'t match</span></p></body></html> ',
             "passwordOutOfRange": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password '
-                                  'must be between 2 and 20 in length</span></p></body></html> '
+                                  'must be between 4 and 20 in length</span></p></body></html> '
 
         }
         self.timer = QtCore.QTimer()
