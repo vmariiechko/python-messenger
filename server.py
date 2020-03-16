@@ -1,4 +1,5 @@
 import time
+import sqlite3
 from datetime import datetime
 
 from flask import Flask, request
@@ -14,6 +15,16 @@ users = {
     'Mary': '54321',
     'Admin': 'admin'
 }
+
+conn = sqlite3.connect("data.db")
+cursor = conn.cursor()
+cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+                username text, password text
+                )""")
+cursor.execute("""CREATE TABLE IF NOT EXISTS messages(
+                username text, password text, message text, time integer
+                )""")
+conn.close()
 
 
 @app.route("/")
@@ -103,11 +114,19 @@ def signupUser():
     elif len(password) not in range(4, 20, 1):
         return {"loginOutOfRange": False, "passwordOutOfRange": True}
 
-    if username not in users:
+    conn = sqlite3.connect("data.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username=:username", {'username': username})
+    data = cursor.fetchone()
+
+    if data is None:
+        cursor.execute("INSERT INTO users VALUES (:username, :password)", {'username': username, 'password': password})
         users[username] = password
     else:
         return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
 
+    conn.commit()
+    conn.close()
     return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': True}
 
 
