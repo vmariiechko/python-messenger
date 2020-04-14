@@ -78,6 +78,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 self.passwordError2.setText(self._translate("Messenger", self.errorMessages['passwordRequired']))
                 self.passwordLine2.setStyleSheet("border: 1px solid red")
                 return
+
         try:
             response = requests.post(
                 'http://127.0.0.1:5000/signup',
@@ -85,7 +86,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             )
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about server problems
+            raise SystemExit  # todo warning screen about error
 
         if response.json()['loginOutOfRange']:
             self.loginError2.setText(self._translate("Messenger", self.errorMessages['loginOutOfRange']))
@@ -129,6 +130,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 self.passwordError1.setText(self._translate("Messenger", self.errorMessages['passwordRequired']))
                 self.passwordLine1.setStyleSheet("border: 1px solid red")
                 return
+
         try:
             response = requests.post(
                 'http://127.0.0.1:5000/auth',
@@ -136,7 +138,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             )
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about server problems
+            raise SystemExit  # todo warning screen about error
 
         if not response.json()['exist']:
             self.loginError1.setText(self._translate("Messenger", self.errorMessages['invalidLogin']))
@@ -163,7 +165,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             )
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about server problems
+            raise SystemExit  # todo warning screen about error
 
         self.textEdit.clear()
         self.textEdit.repaint()
@@ -180,7 +182,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             data = response.json()
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about server problems
+            raise SystemExit  # todo warning screen about error
 
         for message in data['messages']:
             # float -> datetime
