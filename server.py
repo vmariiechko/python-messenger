@@ -9,7 +9,8 @@ queries = {
     'create_users_table': """CREATE TABLE IF NOT EXISTS users (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 username TEXT NOT NULL,
-                                password TEXT NOT NULL
+                                password_hash BLOB NOT NULL,
+                                last_active INTEGER DEFAULT 0 NOT NULL 
                                 );""",
     'create_messages_table': """CREATE TABLE IF NOT EXISTS messages (
                                   id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -75,12 +76,12 @@ def messagesView():
 
     connection = createConnection("data.sqlite3")
 
-    select_messages = f"SELECT * FROM messages WHERE time > {after}"
-    query_data = executeReadQuery(connection, select_messages, 1)
+    select_messages = f"SELECT * FROM messages WHERE time > :after"
+    query_data = executeReadQuery(connection, select_messages, 1, {'after': after})
 
     for item in query_data:
-        select_username = f"SELECT username FROM users WHERE id LIKE {item[3]}"
-        username = executeReadQuery(connection, select_username, 0)
+        select_username = f"SELECT username FROM users WHERE id LIKE :item"
+        username = executeReadQuery(connection, select_username, 0, {'item': item[3]})
         message = {'username': username[0], 'text': item[1], 'time': item[2]}
         new_messages.append(message)
 
@@ -105,12 +106,13 @@ def sendView():
 
     connection = createConnection("data.sqlite3")
 
-    select_user_id = f"SELECT id FROM users WHERE username LIKE '{username}'"
-    query_data = executeReadQuery(connection, select_user_id, 0)
+    select_user_id = f"SELECT id FROM users WHERE username LIKE :username"
+    query_data = executeReadQuery(connection, select_user_id, 0, {'username': username})
 
+    data_dict = {'text': text, 'id': query_data[0]}
     new_message = f"INSERT INTO messages (text, time, user_id) " \
-                  f"VALUES ('{text}', strftime('%s','now'), '{query_data[0]}')"
-    executeQuery(connection, new_message)
+                  f"VALUES (:text, strftime('%s','now'), :id)"
+    executeQuery(connection, new_message, data_dict)
 
     connection.close()
     return {'ok': True}
@@ -130,18 +132,19 @@ def authUser():
         "match": bool
     }
     """
-    data = request.json
-    username = data["username"]
-    password = data["password"]
+    username = request.authorization.username
+    password = request.authorization.password
 
     connection = createConnection("data.sqlite3")
 
-    select_user_password = f"SELECT password FROM users WHERE username LIKE '{username}'"
-    query_data = executeReadQuery(connection, select_user_password, 0)
+    select_user_password = f"SELECT password_hash FROM users WHERE username LIKE :username"
+    query_data = executeReadQuery(connection, select_user_password, 0, {'username': username})
+
+    password_hash = codec(query_data[0], 0)
 
     if query_data is None:
         return {'exist': False, 'match': False}
-    elif query_data[0] != password:
+    elif not checkPassword(password.encode(), password_hash):
         return {'exist': True, 'match': False}
 
     connection.close()
@@ -163,9 +166,8 @@ def signupUser():
         "ok": bool
     }
     """
-    data = request.json
-    username = data["username"]
-    password = data["password"]
+    username = request.authorization.username
+    password = request.authorization.password
 
     if len(username) not in range(4, 20, 1):
         return {"loginOutOfRange": True}
@@ -174,13 +176,16 @@ def signupUser():
 
     connection = createConnection("data.sqlite3")
 
-    select_user = f"SELECT * FROM users WHERE username LIKE '{username}'"
-    query_data = executeReadQuery(connection, select_user, 0)
+    select_user = f"SELECT * FROM users WHERE username LIKE :username"
+    query_data = executeReadQuery(connection, select_user, 0, {'username': username})
 
     if query_data is None:
-        create_user = f"INSERT INTO users (username, password)" \
-                      f"VALUES ('{username}', '{password}')"
-        executeQuery(connection, create_user)
+        password_hash = codec(password, 1)
+        password_hash = sqlite3.Binary(password_hash)
+        data_dict = {'username': username, 'password_hash': password_hash}
+        create_user = f"INSERT INTO users (username, password_hash)" \
+                      f"VALUES (:username, :password_hash)"
+        executeQuery(connection, create_user, data_dict)
     else:
         return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
 

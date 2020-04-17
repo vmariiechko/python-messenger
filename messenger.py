@@ -82,7 +82,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         try:
             response = requests.post(
                 'http://127.0.0.1:5000/signup',
-                json={"username": self.username, "password": self.password}
+                auth=(self.username, self.password),
+                verify=False
             )
         except requests.exceptions.RequestException as e:
             print(e)
@@ -134,7 +135,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         try:
             response = requests.post(
                 'http://127.0.0.1:5000/auth',
-                json={"username": self.username, "password": self.password}
+                auth=(self.username, self.password),
+                verify=False
             )
         except requests.exceptions.RequestException as e:
             print(e)
@@ -161,7 +163,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         try:
             requests.post(
                 'http://127.0.0.1:5000/send',
-                json={"username": self.username, "text": text}
+                json={"username": self.username, "text": text},
+                verify=False
             )
         except requests.exceptions.RequestException as e:
             print(e)
@@ -177,7 +180,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         try:
             response = requests.get(
                 'http://127.0.0.1:5000/messages',
-                params={'after': self.last_message_time}
+                params={'after': self.last_message_time},
+                verify=False
             )
             data = response.json()
         except requests.exceptions.RequestException as e:
