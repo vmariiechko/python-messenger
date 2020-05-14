@@ -76,13 +76,14 @@ def messagesView():
 
     connection = createConnection("data.sqlite3")
 
-    select_messages = f"SELECT * FROM messages WHERE time > :after"
+    select_messages = f"SELECT m.text, m.time, u.username FROM messages m " \
+                      f"INNER JOIN users u " \
+                      f"ON m.user_id = u.id " \
+                      f"WHERE m.time > :after"
     query_data = executeReadQuery(connection, select_messages, 1, {'after': after})
 
     for item in query_data:
-        select_username = f"SELECT username FROM users WHERE id LIKE :item"
-        username = executeReadQuery(connection, select_username, 0, {'item': item[3]})
-        message = {'username': username[0], 'text': item[1], 'time': item[2]}
+        message = {'username': item[2], 'text': item[0], 'time': item[1]}
         new_messages.append(message)
 
     connection.close()
