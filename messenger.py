@@ -4,13 +4,22 @@ from PyQt5 import QtWidgets, QtCore
 import clientui
 from clicklabel import clickable
 
+user_client_commands = [
+    {'name': 'close', 'description': 'Close the messenger'},
+]
+
+
+def close(window):
+    # TODO pop up question window
+    window.close()
+
 
 class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self._translate = QtCore.QCoreApplication.translate
-        self.sendButton.pressed.connect(self.sendMessage)
+        self.sendButton.pressed.connect(self.send)
         self.signUpButton.pressed.connect(self.signUpUser)
         self.loginButton.pressed.connect(self.loginUser)
         self.textEdit.installEventFilter(self)
@@ -44,7 +53,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
             if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus():
-                self.sendMessage()
+                self.send()
                 return True
         return super().eventFilter(obj, event)
 
@@ -87,7 +96,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             )
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about error
+            raise SystemExit
 
         if response.json()['loginOutOfRange']:
             self.loginError2.setText(self._translate("Messenger", self.errorMessages['loginOutOfRange']))
@@ -140,7 +149,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             )
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about error
+            raise SystemExit
 
         if not response.json()['exist']:
             self.loginError1.setText(self._translate("Messenger", self.errorMessages['invalidLogin']))
@@ -153,13 +162,18 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
         self.stackedWidget.setCurrentIndex(2)
 
-    def sendMessage(self):
+    def send(self):
         text = self.textEdit.toPlainText()
         text = text.strip()
 
         if not text:
             return
+        elif text.startswith('/'):
+            self.sendCommand(text[1:])
+        else:
+            self.sendMessage(text)
 
+    def sendMessage(self, text):
         try:
             requests.post(
                 'http://127.0.0.1:5000/send',
@@ -168,7 +182,36 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             )
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about error
+            raise SystemExit
+
+        self.textEdit.clear()
+        self.textEdit.repaint()
+
+    def sendCommand(self, cmd_string):
+        command = cmd_string.split()[0]
+
+        if command in [cmd['name'] for cmd in user_client_commands]:
+            func = globals()[command]
+            func(self)
+        elif command == 'help':
+            try:
+                response = requests.post(
+                    'http://127.0.0.1:5000/command',
+                    json={"command": cmd_string}, verify=False
+                )
+            except requests.exceptions.RequestException as e:
+                print(e)
+                raise SystemExit
+
+            if not response.json()['ok']:
+                self.addText(response.json()['status'])
+                self.addText('')
+            else:
+                for cmd in user_client_commands:
+                    self.addText('{name:<10} - {description:<}'.format(**cmd))
+                for cmd in response.json()['status']:
+                    self.addText('{name:<10} - {description:<}'.format(**cmd))
+                self.addText('')
 
         self.textEdit.clear()
         self.textEdit.repaint()
@@ -186,7 +229,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             data = response.json()
         except requests.exceptions.RequestException as e:
             print(e)
-            raise SystemExit  # todo warning screen about error
+            raise SystemExit
 
         for message in data['messages']:
             # float -> datetime

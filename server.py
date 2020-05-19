@@ -10,6 +10,8 @@ queries = {
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 username TEXT NOT NULL,
                                 password_hash BLOB NOT NULL,
+                                registered INTEGER NOT NULL,
+                                role INTEGER DEFAULT 1 NOT NULL,
                                 last_active INTEGER DEFAULT 0 NOT NULL 
                                 );""",
     'create_messages_table': """CREATE TABLE IF NOT EXISTS messages (
@@ -22,10 +24,23 @@ queries = {
     'select_all_users': """SELECT * FROM users"""
 }
 
+user_server_commands = [
+    {'name': 'help', 'description': 'List available commands'},
+    {'name': 'reg', 'description': 'Show registration date'},
+]
+admin_server_commands = [
+    {'name': 'clear', 'description': 'Clear chat messages'},
+]
+
 connection = createConnection("data.sqlite3")
 executeQuery(connection, queries['create_users_table'])
 executeQuery(connection, queries['create_messages_table'])
 connection.close()
+
+
+def help():
+    # TODO check role for admin commands
+    return user_server_commands + admin_server_commands
 
 
 @app.route("/")
@@ -59,7 +74,7 @@ def status():
 
 
 @app.route("/messages")
-def messagesView():
+def messagesHistory():
     """
     Receive messages after point "after"
 
@@ -91,7 +106,7 @@ def messagesView():
 
 
 @app.route("/send", methods=['POST'])
-def sendView():
+def send():
     """
     Send message
 
@@ -184,14 +199,37 @@ def signupUser():
         password_hash = codec(password, 1)
         password_hash = sqlite3.Binary(password_hash)
         data_dict = {'username': username, 'password_hash': password_hash}
-        create_user = f"INSERT INTO users (username, password_hash)" \
-                      f"VALUES (:username, :password_hash)"
+        create_user = f"INSERT INTO users (username, password_hash, registered)" \
+                      f"VALUES (:username, :password_hash, strftime('%s','now'))"
         executeQuery(connection, create_user, data_dict)
     else:
         return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
 
     connection.close()
     return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': True}
+
+
+@app.route("/command", methods=['POST'])
+def runCommand():
+    """
+    Execute command
+
+    request: {
+        "command": str
+    }
+    response: {
+        "ok": bool,
+        "status": str
+    }
+    """
+    command = request.json["command"]
+
+    if command in [cmd['name'] for cmd in user_server_commands]:
+        func = globals()[command]
+        status = func()
+        return {'ok': True, 'status': status}
+    else:
+        return {'ok': False, 'status': 'An error occured'}
 
 
 app.run()
