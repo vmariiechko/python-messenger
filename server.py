@@ -10,8 +10,10 @@ queries = {
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 username TEXT NOT NULL,
                                 password_hash BLOB NOT NULL,
-                                registered INTEGER NOT NULL,
                                 role INTEGER DEFAULT 1 NOT NULL,
+                                registered INTEGER NOT NULL,
+                                is_banned INTEGER DEFAULT 0,
+                                is_active INTEGER DEFAULT 1 NOT NULL,
                                 last_active INTEGER DEFAULT 0 NOT NULL 
                                 );""",
     'create_messages_table': """CREATE TABLE IF NOT EXISTS messages (
@@ -21,15 +23,21 @@ queries = {
                                   user_id INTEGER NOT NULL, 
                                   FOREIGN KEY (user_id) REFERENCES users (id)
                                 );""",
-    'select_all_users': """SELECT * FROM users"""
+    'select_all_users': """SELECT * FROM users""",
+    'select_active_users': """SELECT username FROM users WHERE is_active = 1"""
 }
 
 user_server_commands = [
     {'name': 'help', 'description': 'List available commands'},
-    {'name': 'reg', 'description': 'Show registration date'},
+    {'name': 'reg', 'description': 'Show your registration date'},
+    {'name': 'online', 'description': 'Show all online users'},
+    {'name': 'status', 'description': 'Show server status'},
 ]
 admin_server_commands = [
     {'name': 'clear', 'description': 'Clear chat messages'},
+    {'name': 'role', 'description': 'Change role of user'},
+    {'name': 'ban', 'description': 'Ban user'},
+    {'name': 'unban', 'description': 'Unban user'},
 ]
 
 connection = createConnection("data.sqlite3")
@@ -38,9 +46,24 @@ executeQuery(connection, queries['create_messages_table'])
 connection.close()
 
 
-def help():
+def help():  # Import all commands to special file
     # TODO check role for admin commands
     return user_server_commands + admin_server_commands
+
+
+def online(args=None):
+    connection = createConnection("data.sqlite3")
+
+    if args:
+        select_users = f"SELECT username, is_active, last_active " \
+                       f"FROM users " \
+                       f"WHERE username IN ({','.join(['?']*len(args))})"
+        query_data = executeReadQuery(connection, select_users, 1, args)
+    else:
+        query_data = executeReadQuery(connection, queries['select_active_users'])
+
+    connection.close()
+    return query_data
 
 
 @app.route("/")
@@ -156,12 +179,20 @@ def authUser():
     select_user_password = f"SELECT password_hash FROM users WHERE username LIKE :username"
     query_data = executeReadQuery(connection, select_user_password, 0, {'username': username})
 
+    if query_data is None:
+        connection.close()
+        return {'exist': False, 'match': False}
+
     password_hash = codec(query_data[0], 0)
 
-    if query_data is None:
-        return {'exist': False, 'match': False}
-    elif not checkPassword(password.encode(), password_hash):
+    if not checkPassword(password.encode(), password_hash):
+        connection.close()
         return {'exist': True, 'match': False}
+
+    is_online = f"UPDATE users " \
+                f"SET is_active = 1 " \
+                f"WHERE username LIKE :username"
+    executeQuery(connection, is_online, {'username': username})
 
     connection.close()
     return {'exist': True, 'match': True}
@@ -203,6 +234,7 @@ def signupUser():
                       f"VALUES (:username, :password_hash, strftime('%s','now'))"
         executeQuery(connection, create_user, data_dict)
     else:
+        connection.close()
         return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
 
     connection.close()
@@ -219,17 +251,51 @@ def runCommand():
     }
     response: {
         "ok": bool,
-        "status": str
+        "output": str
     }
     """
-    command = request.json["command"]
+    cmd_with_args = request.json["command"]
+    cmd_with_args = cmd_with_args.split()
+
+    command = cmd_with_args[0]
+    args = cmd_with_args[1:] if len(cmd_with_args) > 1 else None
 
     if command in [cmd['name'] for cmd in user_server_commands]:
         func = globals()[command]
-        status = func()
-        return {'ok': True, 'status': status}
+
+        if args:
+            output = func(args)
+        else:
+            output = func()
+
+        return {'ok': True, 'output': output}
     else:
-        return {'ok': False, 'status': 'An error occured'}
+        return {'ok': False, 'output': 'An error occured'}
+
+
+@app.route("/exit", methods=['POST'])       # TODO after /logout implementation rename module/func
+def exitUser():
+    """
+    Mark that user loged out
+
+    request: {
+        "username": str
+    }
+    response: {
+        "ok": bool
+    }
+    """
+    username = request.json["username"]
+
+    if username:
+        connection = createConnection("data.sqlite3")
+        exit_user = f"UPDATE users " \
+                    f"SET is_active = 0, last_active = strftime('%s','now')" \
+                    f"WHERE username LIKE :username"
+        executeQuery(connection, exit_user, {'username': username})
+        connection.close()
+
+    return {"ok": True}
 
 
 app.run()
