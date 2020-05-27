@@ -24,14 +24,16 @@ queries = {
                                   FOREIGN KEY (user_id) REFERENCES users (id)
                                 );""",
     'select_all_users': """SELECT * FROM users""",
+    'select_all_usernames': """SELECT username FROM users""",
     'select_active_users': """SELECT username FROM users WHERE is_active = 1"""
 }
 
 user_server_commands = [
     {'name': 'help', 'description': 'List available commands'},
-    {'name': 'reg', 'description': 'Show your registration date'},
+    {'name': 'myself', 'description': 'Show information about you'},
     {'name': 'online', 'description': 'Show all online users'},
     {'name': 'status', 'description': 'Show server status'},
+    {'name': 'registered', 'description': 'List all registered users'},
 ]
 admin_server_commands = [
     {'name': 'clear', 'description': 'Clear chat messages'},
@@ -46,21 +48,43 @@ executeQuery(connection, queries['create_messages_table'])
 connection.close()
 
 
-def help():  # Import all commands to special file
+def help(username, args=None):  # Import all commands to special file
     # TODO check role for admin commands
     return user_server_commands + admin_server_commands
 
 
-def online(args=None):
+def online(username, args=None):
     connection = createConnection("data.sqlite3")
 
     if args:
         select_users = f"SELECT username, is_active, last_active " \
                        f"FROM users " \
-                       f"WHERE username IN ({','.join(['?']*len(args))})"
+                       f"WHERE username IN ({','.join(['?'] * len(args))})"
         query_data = executeReadQuery(connection, select_users, 1, args)
     else:
         query_data = executeReadQuery(connection, queries['select_active_users'])
+
+    connection.close()
+    return query_data
+
+
+def myself(username, args=None):
+    connection = createConnection("data.sqlite3")
+
+    reg_date = f"SELECT id, role, registered, last_active " \
+               f"FROM users " \
+               f"WHERE username LIKE :username"
+    query_data = executeReadQuery(connection, reg_date, 0, {'username': username})
+
+    connection.close()
+    return query_data
+
+
+def registered(username, args=None):
+    connection = createConnection("data.sqlite3")
+
+    all_usernames = queries['select_all_usernames']
+    query_data = executeReadQuery(connection, all_usernames)
 
     connection.close()
     return query_data
@@ -72,7 +96,7 @@ def hello():
 
 
 @app.route("/status")
-def status():
+def status(username=None, args=None):
     """
     Print server status, time, users amount & messages amount
 
@@ -254,6 +278,7 @@ def runCommand():
         "output": str
     }
     """
+    username = request.json["username"]
     cmd_with_args = request.json["command"]
     cmd_with_args = cmd_with_args.split()
 
@@ -264,16 +289,16 @@ def runCommand():
         func = globals()[command]
 
         if args:
-            output = func(args)
+            output = func(username, args)
         else:
-            output = func()
+            output = func(username)
 
         return {'ok': True, 'output': output}
     else:
         return {'ok': False, 'output': 'An error occured'}
 
 
-@app.route("/exit", methods=['POST'])       # TODO after /logout implementation rename module/func
+@app.route("/exit", methods=['POST'])  # TODO after /logout implementation rename module/func
 def exitUser():
     """
     Mark that user loged out

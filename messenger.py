@@ -219,72 +219,116 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         if command in [cmd['name'] for cmd in self.user_client_commands]:
             func = globals()[command]
             func(self)
+            self.textEdit.clear()
+            return
+
+        try:
+            response = requests.post(
+                'http://127.0.0.1:5000/command',
+                json={"username": self.username, "command": 'help'}, verify=False
+            )
+        except requests.exceptions.RequestException as e:
+            print(e)
+            raise SystemExit
+
+        if not response.json()['ok']:
+            self.addText(response.json()['output'] + "\n")
+            self.textEdit.clear()
+            return
+
+        server_commands = response.json()['output']
+        if command not in [cmd['name'] for cmd in server_commands]:
+            self.addText(f"Command '{command}' not found.")
+            self.addText("Try '/help' to list all available commands :)\n")
+            self.textEdit.clear()
+            return
+
         elif command == 'help':
-            try:
-                response = requests.post(
-                    'http://127.0.0.1:5000/command',
-                    json={"command": cmd_string}, verify=False
-                )
-            except requests.exceptions.RequestException as e:
-                print(e)
-                raise SystemExit
+            for cmd in self.user_client_commands:
+                self.addText('{name:<10} - {description:<}'.format(**cmd))
 
-            if not response.json()['ok']:
-                self.addText(response.json()['output'] + "\n")
-            else:
-                for cmd in self.user_client_commands:
-                    self.addText('{name:<10} - {description:<}'.format(**cmd))
-                for cmd in response.json()['output']:
-                    self.addText('{name:<10} - {description:<}'.format(**cmd))
-                self.addText('')
-        elif command == 'online':
-            try:
-                response = requests.post(
-                    'http://127.0.0.1:5000/command',
-                    json={"command": cmd_string}, verify=False
-                )
-            except requests.exceptions.RequestException as e:
-                print(e)
-                raise SystemExit
+            for cmd in server_commands:
+                self.addText('{name:<10} - {description:<}'.format(**cmd))
 
-            if not response.json()['ok']:
-                self.addText(response.json()['output'] + "\n")
-            else:
-                users = response.json()['output']
-                reg_usernames = [user[0] for user in users]
-                users_info = ''
+            self.addText('')
+            self.textEdit.clear()
+            return
 
-                if args:
+        try:
+            response = requests.post(
+                'http://127.0.0.1:5000/command',
+                json={"username": self.username, "command": cmd_string}, verify=False
+            )
+        except requests.exceptions.RequestException as e:
+            print(e)
+            raise SystemExit
 
-                    if len(args) > len(users):
-                        unregistered = [user for user in args if user not in reg_usernames]
-                        not_exist = ', '.join(unregistered)
-                        if len(unregistered) > 1:
-                            self.addText("They aren't registered:")
-                            self.addText(not_exist + "\n")
-                        else:
-                            self.addText(f"{not_exist} isn't registered \n")
+        if not response.json()['ok']:
+            self.addText(response.json()['output'] + "\n")
+            self.textEdit.clear()
+            return
 
-                    for user in users:
-                        if user[1] == 1:
-                            users_info += f"{user[0]} is online\n"
-                        else:
-                            beauty_time = datetime.fromtimestamp(user[2])
-                            beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
-                            users_info += f"{user[0]} was online at {beauty_time}\n"
+        if command == 'online':
+            users = response.json()['output']
+            reg_usernames = [user[0] for user in users]
+            users_info = ''
 
-                    if users_info:
-                        self.addText(users_info)
+            if args:
 
-                else:
-                    online_count = len(reg_usernames)
-
-                    if online_count > 1:
-                        users_info = ', '.join(reg_usernames)
-                        self.addText(f"There are currently {online_count} users online:")
-                        self.addText(users_info + "\n")
+                if len(args) > len(users):
+                    unregistered = [user for user in args if user not in reg_usernames]
+                    not_exist = ', '.join(unregistered)
+                    if len(unregistered) > 1:
+                        self.addText("They aren't registered:")
+                        self.addText(not_exist)
+                        self.addText("You can type '/registered' to see registered users\n")
                     else:
-                        self.addText("Nobody is online now apart of you \n")
+                        self.addText(f"{not_exist} isn't registered\n")
+
+                for user in users:
+                    if user[1] == 1:
+                        users_info += f"{user[0]} is online\n"
+                    else:
+                        beauty_time = datetime.fromtimestamp(user[2])
+                        beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
+                        users_info += f"{user[0]} was online at {beauty_time}\n"
+
+                if users_info:
+                    self.addText(users_info)
+
+            else:
+                online_count = len(reg_usernames)
+
+                if online_count > 1:
+                    users_info = ', '.join(reg_usernames)
+                    self.addText(f"There are currently {online_count} users online:")
+                    self.addText(users_info + "\n")
+                else:
+                    self.addText("Nobody is online now apart of you\n")
+
+        elif command == 'status':
+            status = response.json()['output']
+            self.addText("######Server Status######")
+            self.addText(f"Server date&time: {status['time']}")
+            self.addText(f"Registered users: {status['users_count']}")
+            self.addText(f"Written messages: {status['messages_count']}\n")
+
+        elif command == 'myself':
+            myself = response.json()['output']
+            myself[2] = datetime.fromtimestamp(myself[2]).strftime('%Y/%m/%d %H:%M:%S')
+            myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
+            self.addText("######Your information######")
+            self.addText(f"Your id: {myself[0]}")
+            # 3 - admin, 2 - moderator, 1 - user
+            self.addText(f"Permissions: {'administrator' if myself[1]==3 else 'user'}")
+            self.addText(f"Registration date&time: {myself[2]}")
+            self.addText(f"Previous activity: {myself[3]}\n")
+
+        elif command == 'registered':
+            all_usernames = response.json()['output']
+            all_usernames = sum(all_usernames, [])
+            all_usernames = ', '.join([username for username in all_usernames])
+            self.addText(f"Registered users: {all_usernames}\n")
 
         self.textEdit.clear()
         self.textEdit.repaint()
