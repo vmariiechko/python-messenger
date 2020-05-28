@@ -298,8 +298,8 @@ def runCommand():
         return {'ok': False, 'output': 'An error occured'}
 
 
-@app.route("/exit", methods=['POST'])  # TODO after /logout implementation rename module/func
-def exitUser():
+@app.route("/logout", methods=['POST'])
+def logoutUser():
     """
     Mark that user loged out
 
@@ -314,10 +314,10 @@ def exitUser():
 
     if username:
         connection = createConnection("data.sqlite3")
-        exit_user = f"UPDATE users " \
-                    f"SET is_active = 0, last_active = strftime('%s','now')" \
-                    f"WHERE username LIKE :username"
-        executeQuery(connection, exit_user, {'username': username})
+        logout_user = f"UPDATE users " \
+                      f"SET is_active = 0, last_active = strftime('%s','now')" \
+                      f"WHERE username LIKE :username"
+        executeQuery(connection, logout_user, {'username': username})
         connection.close()
 
     return {"ok": True}

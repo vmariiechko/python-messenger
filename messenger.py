@@ -6,10 +6,6 @@ import clientui
 from clicklabel import clickable
 
 
-def close(window):
-    window.close()
-
-
 class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
     def __init__(self):
         super().__init__()
@@ -45,6 +41,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             {'name': 'close', 'description': 'Close the messenger'},
             {'name': 'logout', 'description': 'Logout from account'},
         ]
+        self.run_client_command = {'close': self.close,
+                                   'logout': self.logout}
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.getUpdates)
         self.timer.start(1000)
@@ -59,14 +57,14 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         return super().eventFilter(obj, event)
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Message',
+        reply = QMessageBox.question(self, 'Quit',
                                      "Are you sure to quit?", QMessageBox.Yes |
                                      QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
             try:
                 requests.post(
-                    'http://127.0.0.1:5000/exit',
+                    'http://127.0.0.1:5000/logout',
                     json={"username": self.username}, verify=False
                 )
             except requests.exceptions.RequestException as e:
@@ -75,6 +73,25 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             event.accept()
         else:
             event.ignore()
+
+    def logout(self):
+        reply = QMessageBox.question(self, 'Logout',
+                                     "Are you sure to logout?", QMessageBox.Yes |
+                                     QMessageBox.No, QMessageBox.Yes)
+
+        if reply == QMessageBox.Yes:
+            try:
+                requests.post(
+                    'http://127.0.0.1:5000/logout',
+                    json={"username": self.username}, verify=False
+                )
+            except requests.exceptions.RequestException as e:
+                print(e)
+                raise SystemExit
+            self.goToLogin()
+            self.textEdit.clear()
+        else:
+            pass
 
     def goToRegistration(self):
         self.stackedWidget.setCurrentIndex(1)
@@ -140,6 +157,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             return
 
         self.stackedWidget.setCurrentIndex(2)
+        self.passwordLine2.clear()
+        self.loginLine2.clear()
+        self.password = None
 
     def loginUser(self):
         self.loginError1.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
@@ -186,6 +206,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             return
 
         self.stackedWidget.setCurrentIndex(2)
+        self.passwordLine1.clear()
+        self.loginLine1.clear()
+        self.password = None
 
     def send(self):
         text = self.textEdit.toPlainText()
@@ -217,8 +240,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
         if command in [cmd['name'] for cmd in self.user_client_commands]:
-            func = globals()[command]
-            func(self)
+            self.run_client_command.get(command)()
             self.textEdit.clear()
             return
 
