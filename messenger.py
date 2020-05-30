@@ -89,7 +89,10 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 print(e)
                 raise SystemExit
             self.goToLogin()
+            self.username = None        # Unexpected self.username dissapear (when this line was before goToLogin)
             self.textEdit.clear()
+            self.textBrowser.clear()
+            self.last_message_time = 0  # TODO create refresh method to reset everything
         else:
             pass
 
@@ -204,7 +207,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.passwordError1.setText(self._translate("Messenger", self.warningMessages['invalidPassword']))
             self.passwordLine1.setStyleSheet("border: 1px solid red")
             return
-
+        print("Login: " + self.username)    # Unexpected self.username dissapear
         self.stackedWidget.setCurrentIndex(2)
         self.passwordLine1.clear()
         self.loginLine1.clear()
@@ -222,6 +225,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.sendMessage(text)
 
     def sendMessage(self, text):
+        print("Message: " + self.username)
         try:
             requests.post(
                 'http://127.0.0.1:5000/send',
@@ -243,7 +247,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.run_client_command.get(command)()
             self.textEdit.clear()
             return
-
+        print("Command: " + self.username)     # Unexpected self.username dissapear
         try:
             response = requests.post(
                 'http://127.0.0.1:5000/command',
@@ -337,20 +341,33 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
         elif command == 'myself':
             myself = response.json()['output']
+
             myself[2] = datetime.fromtimestamp(myself[2]).strftime('%Y/%m/%d %H:%M:%S')
             myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
+
+            # 3 - admin, 2 - moderator, 1 - user
+            if myself[1] == 3:
+                myself[1] = "Administrator"
+            elif myself[1] == 2:
+                myself[1] = "Moderator"
+            else:
+                myself[1] = "User"
+
             self.addText("######Your information######")
             self.addText(f"Your id: {myself[0]}")
-            # 3 - admin, 2 - moderator, 1 - user
-            self.addText(f"Permissions: {'administrator' if myself[1]==3 else 'user'}")
+            self.addText(f"Role: {myself[1]}")
             self.addText(f"Registration date&time: {myself[2]}")
             self.addText(f"Previous activity: {myself[3]}\n")
 
         elif command == 'registered':
             all_usernames = response.json()['output']
             all_usernames = sum(all_usernames, [])
-            all_usernames = ', '.join([username for username in all_usernames])
+            all_usernames = ', '.join([user for user in all_usernames])
             self.addText(f"Registered users: {all_usernames}\n")
+
+        elif command == 'role':
+            updated = response.json()['output']
+            self.addText(args[0] + updated)
 
         self.textEdit.clear()
         self.textEdit.repaint()

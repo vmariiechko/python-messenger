@@ -1,4 +1,5 @@
 import sqlite3
+import threading
 from database import *
 from datetime import datetime
 from flask import Flask, request
@@ -35,11 +36,12 @@ user_server_commands = [
     {'name': 'status', 'description': 'Show server status'},
     {'name': 'registered', 'description': 'List all registered users'},
 ]
-admin_server_commands = [
-    {'name': 'clear', 'description': 'Clear chat messages'},
-    {'name': 'role', 'description': 'Change role of user'},
+moderator_server_commands = [
     {'name': 'ban', 'description': 'Ban user'},
     {'name': 'unban', 'description': 'Unban user'},
+]
+admin_server_commands = [
+    {'name': 'role', 'description': 'Change role of user'},
 ]
 
 connection = createConnection("data.sqlite3")
@@ -48,9 +50,28 @@ executeQuery(connection, queries['create_messages_table'])
 connection.close()
 
 
-def help(username, args=None):  # Import all commands to special file
-    # TODO check role for admin commands
-    return user_server_commands + admin_server_commands
+def checkPermissions(username):
+    connection = createConnection("data.sqlite3")
+
+    select_permission = f"SELECT role " \
+                        f"FROM users " \
+                        f"WHERE username LIKE :username"
+
+    query_data = executeReadQuery(connection, select_permission, 0, {'username': username})
+    
+    connection.close()
+    return query_data
+
+
+def help(username, args=None):
+    role = checkPermissions(username)
+
+    if role[0] == 3:
+        return user_server_commands + moderator_server_commands + admin_server_commands
+    elif role[0] == 2:
+        return user_server_commands + moderator_server_commands
+    else:
+        return user_server_commands
 
 
 def online(username, args=None):
@@ -90,13 +111,41 @@ def registered(username, args=None):
     return query_data
 
 
+def role(username, args):
+    permission = args[-1]
+    if permission not in ('1', '2', '3'):
+        return {'ok': False, 'result': "Role isn't specified"}
+    elif len(args) != 2:
+        return {'ok': False, 'result': "Enter username"}
+
+    all_usernames = registered(username)
+    user = args[0]
+
+    if user not in [usernames[0] for usernames in all_usernames]:
+        return {'ok': False, 'result': "User doesn't exist"}
+
+    if user == username:
+        return {'ok': False, 'result': "It's not allowed to change permissions for yourself"}
+
+    connection = createConnection("data.sqlite3")
+    data_dict = {'permission': permission, 'username': user}
+
+    update_role = f"UPDATE users " \
+                  f"SET role = :permission " \
+                  f"WHERE username LIKE :username"
+    executeQuery(connection, update_role, data_dict)
+
+    connection.close()
+    return {'ok': True, 'result': '\'s permissions was updated successfully\n'}
+
+
 @app.route("/")
 def hello():
     return "<h1>My First Python Messenger</h1>"
 
 
 @app.route("/status")
-def status(username=None, args=None):
+def status(username=None, args=None):       # TODO change arguments / reimplement module after moving commands to file
     """
     Print server status, time, users amount & messages amount
 
@@ -271,6 +320,7 @@ def runCommand():
     Execute command
 
     request: {
+        "username": str
         "command": str
     }
     response: {
@@ -281,6 +331,10 @@ def runCommand():
     username = request.json["username"]
     cmd_with_args = request.json["command"]
     cmd_with_args = cmd_with_args.split()
+    permissions = checkPermissions(username)
+
+    print("Server Role: ")
+    print(permissions[0])
 
     command = cmd_with_args[0]
     args = cmd_with_args[1:] if len(cmd_with_args) > 1 else None
@@ -294,6 +348,31 @@ def runCommand():
             output = func(username)
 
         return {'ok': True, 'output': output}
+
+    elif command in [cmd['name'] for cmd in moderator_server_commands]:
+        if permissions[0] < 2:
+            return {'ok': False, 'output': 'An error occured'}
+        elif not args:
+            return {'ok': False, 'output': 'Argument must be specified'}
+
+        func = globals()[command]
+
+        output = func(username, args)
+
+        return {'ok': output['ok'], 'output': output['result']}
+
+    elif command in [cmd['name'] for cmd in admin_server_commands]:
+        if permissions[0] != 3:
+            return {'ok': False, 'output': 'An error occured'}
+        elif not args:
+            return {'ok': False, 'output': 'Argument must be specified'}
+
+        func = globals()[command]
+
+        output = func(username, args)
+
+        return {'ok': output['ok'], 'output': output['result']}
+
     else:
         return {'ok': False, 'output': 'An error occured'}
 
