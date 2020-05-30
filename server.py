@@ -32,13 +32,13 @@ queries = {
 user_server_commands = [
     {'name': 'help', 'description': 'List available commands'},
     {'name': 'myself', 'description': 'Show information about you'},
-    {'name': 'online', 'description': 'Show all online users'},
     {'name': 'status', 'description': 'Show server status'},
+    {'name': 'online', 'description': 'Show all online users'},
     {'name': 'registered', 'description': 'List all registered users'},
 ]
 moderator_server_commands = [
-    {'name': 'ban', 'description': 'Ban user'},
-    {'name': 'unban', 'description': 'Unban user'},
+    {'name': 'ban', 'description': 'Ban users'},
+    {'name': 'unban', 'description': 'Unban users'},
 ]
 admin_server_commands = [
     {'name': 'role', 'description': 'Change role of user'},
@@ -58,7 +58,7 @@ def checkPermissions(username):
                         f"WHERE username LIKE :username"
 
     query_data = executeReadQuery(connection, select_permission, 0, {'username': username})
-    
+
     connection.close()
     return query_data
 
@@ -139,13 +139,44 @@ def role(username, args):
     return {'ok': True, 'result': '\'s permissions was updated successfully\n'}
 
 
+def ban(username, args, flag=1):
+    all_usernames = registered(username)
+    all_usernames = sum(all_usernames, ())
+
+    if not all(username in all_usernames for username in args):
+        return {'ok': False, 'result': 'Not all users exist'}
+
+    connection = createConnection("data.sqlite3")
+
+    if flag:
+        ban_users = f"UPDATE users " \
+                    f"SET is_banned = 1 " \
+                    f"WHERE username IN ({','.join(['?'] * len(args))})" \
+                    f"AND role = 1"
+        executeQuery(connection, ban_users, args)
+        result = 'Only users were banned\n'
+    else:
+        unban_users = f"UPDATE users " \
+                      f"SET is_banned = 0 " \
+                      f"WHERE username IN ({','.join(['?'] * len(args))})"
+        executeQuery(connection, unban_users, args)
+        result = 'Users were unbanned\n'
+
+    connection.close()
+    return {'ok': True, 'result': result}
+
+
+def unban(username, args):
+    return ban(username, args, 0)
+
+
 @app.route("/")
 def hello():
     return "<h1>My First Python Messenger</h1>"
 
 
 @app.route("/status")
-def status(username=None, args=None):       # TODO change arguments / reimplement module after moving commands to file
+def status(username=None, args=None):  # TODO change arguments / reimplement module after moving commands to file
     """
     Print server status, time, users amount & messages amount
 
@@ -249,12 +280,12 @@ def authUser():
 
     connection = createConnection("data.sqlite3")
 
-    select_user_password = f"SELECT password_hash FROM users WHERE username LIKE :username"
-    query_data = executeReadQuery(connection, select_user_password, 0, {'username': username})
+    select_user = f"SELECT password_hash, is_banned  FROM users WHERE username LIKE :username"
+    query_data = executeReadQuery(connection, select_user, 0, {'username': username})
 
     if query_data is None:
         connection.close()
-        return {'exist': False, 'match': False}
+        return {'exist': False}
 
     password_hash = codec(query_data[0], 0)
 
@@ -262,13 +293,16 @@ def authUser():
         connection.close()
         return {'exist': True, 'match': False}
 
+    elif query_data[1] == 1:
+        return {'exist': True, 'match': True, 'banned': True}
+
     is_online = f"UPDATE users " \
                 f"SET is_active = 1 " \
                 f"WHERE username LIKE :username"
     executeQuery(connection, is_online, {'username': username})
 
     connection.close()
-    return {'exist': True, 'match': True}
+    return {'exist': True, 'match': True, 'banned': False}
 
 
 @app.route("/signup", methods=['POST'])
@@ -296,7 +330,7 @@ def signupUser():
 
     connection = createConnection("data.sqlite3")
 
-    select_user = f"SELECT * FROM users WHERE username LIKE :username"
+    select_user = f"SELECT * FROM users WHERE username LIKE :username"  # TODO check query "*"
     query_data = executeReadQuery(connection, select_user, 0, {'username': username})
 
     if query_data is None:

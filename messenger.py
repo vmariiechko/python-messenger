@@ -36,6 +36,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                                   'must be between 4 and 20 in length</span></p></body></html> ',
             "notAlphanumeric": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Login can '
                              'only contain alphanumeric characters</span></p></body></html>',
+            "banned": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Account '
+                               'was banned</span></p></body></html>',
         }
         self.user_client_commands = [
             {'name': 'close', 'description': 'Close the messenger'},
@@ -207,6 +209,10 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.passwordError1.setText(self._translate("Messenger", self.warningMessages['invalidPassword']))
             self.passwordLine1.setStyleSheet("border: 1px solid red")
             return
+        if response.json()['banned']:
+            self.loginError1.setText(self._translate("Messenger", self.warningMessages['banned']))
+            self.loginLine1.setStyleSheet("border: 1px solid red")
+            return
         print("Login: " + self.username)    # Unexpected self.username dissapear
         self.stackedWidget.setCurrentIndex(2)
         self.passwordLine1.clear()
@@ -300,6 +306,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             users_info = ''
 
             if args:
+                args = list(dict.fromkeys(args))
 
                 if len(args) > len(users):
                     unregistered = [user for user in args if user not in reg_usernames]
@@ -368,6 +375,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         elif command == 'role':
             updated = response.json()['output']
             self.addText(args[0] + updated)
+
+        elif command in ('ban', 'unban'):
+            self.addText(response.json()['output'])
 
         self.textEdit.clear()
         self.textEdit.repaint()
