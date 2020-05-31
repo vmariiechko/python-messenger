@@ -30,11 +30,11 @@ queries = {
 }
 
 user_server_commands = [
-    {'name': 'help', 'description': 'List available commands'},
-    {'name': 'myself', 'description': 'Show information about you'},
-    {'name': 'status', 'description': 'Show server status'},
-    {'name': 'online', 'description': 'Show all online users'},
-    {'name': 'registered', 'description': 'List all registered users'},
+    {'name': 'help', 'description': 'Prints available commands'},
+    {'name': 'myself', 'description': 'Prints info about you'},
+    {'name': 'status', 'description': 'Prints server status'},
+    {'name': 'online', 'description': 'Prints online users'},
+    {'name': 'reg', 'description': 'Prints registered users'},
 ]
 moderator_server_commands = [
     {'name': 'ban', 'description': 'Ban users'},
@@ -92,16 +92,16 @@ def online(username, args=None):
 def myself(username, args=None):
     connection = createConnection("data.sqlite3")
 
-    reg_date = f"SELECT id, role, registered, last_active " \
+    select_user = f"SELECT id, role, registered, last_active " \
                f"FROM users " \
                f"WHERE username LIKE :username"
-    query_data = executeReadQuery(connection, reg_date, 0, {'username': username})
+    query_data = executeReadQuery(connection, select_user, 0, {'username': username})
 
     connection.close()
     return query_data
 
 
-def registered(username, args=None):
+def reg(username, args=None):
     connection = createConnection("data.sqlite3")
 
     all_usernames = queries['select_all_usernames']
@@ -118,7 +118,7 @@ def role(username, args):
     elif len(args) != 2:
         return {'ok': False, 'result': "Enter username"}
 
-    all_usernames = registered(username)
+    all_usernames = reg(username)
     user = args[0]
 
     if user not in [usernames[0] for usernames in all_usernames]:
@@ -140,7 +140,7 @@ def role(username, args):
 
 
 def ban(username, args, flag=1):
-    all_usernames = registered(username)
+    all_usernames = reg(username)
     all_usernames = sum(all_usernames, ())
 
     if not all(username in all_usernames for username in args):

@@ -42,7 +42,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         self.user_client_commands = [
             {'name': 'close', 'description': 'Close the messenger'},
             {'name': 'logout', 'description': 'Logout from account'},
-            {'name': 'reload', 'description': 'Clear command messages. Reload messages'},
+            {'name': 'reload', 'description': 'Clear command messages'},
         ]
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
@@ -278,12 +278,13 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
         server_commands = response.json()['output']
         if command not in [cmd['name'] for cmd in server_commands]:
-            self.addText(f"Command '{command}' not found.")
+            self.addText(f"Command '/{command}' not found.")
             self.addText("Try '/help' to list all available commands :)\n")
             self.textEdit.clear()
             return
 
         elif command == 'help':
+            self.addText('To ')
             for cmd in self.user_client_commands:
                 self.addText('{name:<10} - {description:<}'.format(**cmd))
 
@@ -322,7 +323,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                     if len(unregistered) > 1:
                         self.addText("They aren't registered:")
                         self.addText(not_exist)
-                        self.addText("You can type '/registered' to see registered users\n")
+                        self.addText("You can type '/reg' to see registered users\n")
                     else:
                         self.addText(f"{not_exist} isn't registered\n")
 
@@ -374,7 +375,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.addText(f"Registration date&time: {myself[2]}")
             self.addText(f"Previous activity: {myself[3]}\n")
 
-        elif command == 'registered':
+        elif command == 'reg':
             all_usernames = response.json()['output']
             all_usernames = sum(all_usernames, [])
             all_usernames = ', '.join([user for user in all_usernames])
