@@ -42,9 +42,11 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         self.user_client_commands = [
             {'name': 'close', 'description': 'Close the messenger'},
             {'name': 'logout', 'description': 'Logout from account'},
+            {'name': 'reload', 'description': 'Clear command messages. Reload messages'},
         ]
         self.run_client_command = {'close': self.close,
-                                   'logout': self.logout}
+                                   'logout': self.logout,
+                                   'reload': self.reload}
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.getUpdates)
         self.timer.start(1000)
@@ -97,6 +99,10 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.last_message_time = 0  # TODO create refresh method to reset everything
         else:
             pass
+
+    def reload(self):
+        self.textBrowser.clear()
+        self.last_message_time = 0
 
     def goToRegistration(self):
         self.stackedWidget.setCurrentIndex(1)
@@ -253,7 +259,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.run_client_command.get(command)()
             self.textEdit.clear()
             return
+
         print("Command: " + self.username)     # Unexpected self.username dissapear
+
         try:
             response = requests.post(
                 'http://127.0.0.1:5000/command',

@@ -330,7 +330,7 @@ def signupUser():
 
     connection = createConnection("data.sqlite3")
 
-    select_user = f"SELECT * FROM users WHERE username LIKE :username"  # TODO check query "*"
+    select_user = f"SELECT id FROM users WHERE username LIKE :username"
     query_data = executeReadQuery(connection, select_user, 0, {'username': username})
 
     if query_data is None:
