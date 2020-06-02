@@ -30,18 +30,52 @@ queries = {
 }
 
 user_server_commands = [
-    {'name': 'help', 'description': 'Prints available commands'},
-    {'name': 'myself', 'description': 'Prints info about you'},
-    {'name': 'status', 'description': 'Prints server status'},
-    {'name': 'online', 'description': 'Prints online users'},
-    {'name': 'reg', 'description': 'Prints registered users'},
+    {'name': 'help', 'description': 'Prints available commands',
+     'detailed': '#Usage: /help [command]\n\n'
+                 'Prints available commands if no argument.\n'
+                 'Prints detailed description of [command] If argument [command] is specified.\n\n'
+                 '#Examples:\n'
+                 '/help  ->  prints all available commands\n'
+                 '/help reg  ->  prints detailed info about \'/reg\''},
+    {'name': 'myself', 'description': 'Prints info about you',
+     'detailed': '#Usage: /myself\n'
+                 'Prints next information about you:\n'
+                 'ID, role, registration date, last activity.'},
+    {'name': 'status', 'description': 'Prints server status',
+     'detailed': '#Usage: /status\n'
+                 'Prints next information about server:\n'
+                 'Server time, registered users count, written messages count.'},
+    {'name': 'online', 'description': 'Prints online users',
+     'detailed': '#Usage: /online [usernames]\n\n'
+                 'Prints online users if there are no argument.\n'
+                 'If [usernames] specified, prints users status.\n\n'
+                 '#Examples:\n'
+                 '/online  ->  prints all online users\n'
+                 '/online User1 User2  ->  prints User1 & User2 status'},
+    {'name': 'reg', 'description': 'Prints registered users',
+     'detailed': '#Usage: /reg\n'
+                 'Prints usernames of all registered users.'},
 ]
 moderator_server_commands = [
-    {'name': 'ban', 'description': 'Ban users'},
-    {'name': 'unban', 'description': 'Unban users'},
+    {'name': 'ban', 'description': 'Ban users',
+     'detailed': '#Usage: /ban [usernames]\n\n'
+                 'Ban specified [usernames]\n\n'
+                 '#Example:\n'
+                 '/ban User1 User2 -> ban User1 and User2'},
+    {'name': 'unban', 'description': 'Unban users',
+     'detailed': '#Usage: /unban [usernames]\n\n'
+                 'Unban specified [usernames]\n\n'
+                 '#Example:\n'
+                 '/unban User1 User2 -> unban User1 and User2,'},
 ]
 admin_server_commands = [
-    {'name': 'role', 'description': 'Change role of user'},
+    {'name': 'role', 'description': 'Change role of user',
+     'detailed': "#Usage: /role [username] [role]\n\n"
+                 "Change user permissions.\n"
+                 "Argument [role] can be '1', '2' or '3'\n"
+                 "Where 1-user, 2-moderator, 3-administrator\n\n"
+                 "#Example:\n"
+                 "/role Bob 2  ->  change Bob's role to 'moderator'"},
 ]
 
 connection = createConnection("data.sqlite3")
@@ -93,8 +127,8 @@ def myself(username, args=None):
     connection = createConnection("data.sqlite3")
 
     select_user = f"SELECT id, role, registered, last_active " \
-               f"FROM users " \
-               f"WHERE username LIKE :username"
+                  f"FROM users " \
+                  f"WHERE username LIKE :username"
     query_data = executeReadQuery(connection, select_user, 0, {'username': username})
 
     connection.close()
@@ -112,7 +146,7 @@ def reg(username, args=None):
 
 
 def role(username, args):
-    permission = args[-1]
+    permission = args[-1]  # TODO move all parse steps to client
     if permission not in ('1', '2', '3'):
         return {'ok': False, 'result': "Role isn't specified"}
     elif len(args) != 2:

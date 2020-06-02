@@ -1,8 +1,8 @@
-from datetime import datetime
 import requests
+import clientui
+from datetime import datetime
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox
-import clientui
 from clicklabel import clickable
 
 
@@ -39,10 +39,17 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             "banned": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Account '
                                'was banned</span></p></body></html>',
         }
-        self.user_client_commands = [
-            {'name': 'close', 'description': 'Close the messenger'},
-            {'name': 'logout', 'description': 'Logout from account'},
-            {'name': 'reload', 'description': 'Clear command messages'},
+        self.server_commands = []
+        self.client_commands = [
+            {'name': 'close', 'description': 'Close the messenger',
+             'detailed': '#Usage: /close\n'
+                         'Ask you to close messenger.'},
+            {'name': 'logout', 'description': 'Logout account',
+             'detailed': '#Usage: /logout\n'
+                         'Ask you to logout account.'},
+            {'name': 'reload', 'description': 'Clear commands messages',
+             'detailed': '#Usage: /reload\n'
+                         'Clear all commands messages.'},
         ]
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
@@ -167,6 +174,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.loginLine2.setStyleSheet("border: 1px solid red")
             return
 
+        self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
         self.passwordLine2.clear()
         self.loginLine2.clear()
@@ -219,11 +227,31 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.loginError1.setText(self._translate("Messenger", self.warningMessages['banned']))
             self.loginLine1.setStyleSheet("border: 1px solid red")
             return
+
         print("Login: " + self.username)    # Unexpected self.username dissapear
+
+        self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
         self.passwordLine1.clear()
         self.loginLine1.clear()
         self.password = None
+
+    def getServerCommands(self):
+        try:
+            response = requests.post(
+                'http://127.0.0.1:5000/command',
+                json={"username": self.username, "command": 'help'}, verify=False
+            )
+        except requests.exceptions.RequestException as e:
+            print(e)
+            raise SystemExit
+
+        if not response.json()['ok']:
+            self.addText(response.json()['output'] + "\n")
+            self.textEdit.clear()
+            return
+
+        self.server_commands = response.json()['output']
 
     def send(self):
         text = self.textEdit.toPlainText()
@@ -255,41 +283,36 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         command = cmd_string.split()[0]
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
-        if command in [cmd['name'] for cmd in self.user_client_commands]:
+        if command in [cmd['name'] for cmd in self.client_commands]:
             self.run_client_command.get(command)()
             self.textEdit.clear()
             return
 
         print("Command: " + self.username)     # Unexpected self.username dissapear
 
-        try:
-            response = requests.post(
-                'http://127.0.0.1:5000/command',
-                json={"username": self.username, "command": 'help'}, verify=False
-            )
-        except requests.exceptions.RequestException as e:
-            print(e)
-            raise SystemExit
-
-        if not response.json()['ok']:
-            self.addText(response.json()['output'] + "\n")
-            self.textEdit.clear()
-            return
-
-        server_commands = response.json()['output']
-        if command not in [cmd['name'] for cmd in server_commands]:
+        if command not in [cmd['name'] for cmd in self.server_commands]:
             self.addText(f"Command '/{command}' not found.")
             self.addText("Try '/help' to list all available commands :)\n")
             self.textEdit.clear()
             return
 
         elif command == 'help':
-            self.addText('To ')
-            for cmd in self.user_client_commands:
-                self.addText('{name:<10} - {description:<}'.format(**cmd))
+            all_commands = self.server_commands + self.client_commands
+            if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
+                detailed_info = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
+                self.addText('=' * 41)  # -77, #34, _46, =41
+                self.addText(detailed_info[0])
+                self.addText('=' * 41)
+            elif not args:
+                self.addText("#Enter '/help [command]' to print detailed description of specific command\n")
+                self.addText(f"{'Command':<15}Description")
+                for cmd in self.client_commands:
+                    self.addText('{name:<17}{description:<}'.format(**cmd))
 
-            for cmd in server_commands:
-                self.addText('{name:<10} - {description:<}'.format(**cmd))
+                for cmd in self.server_commands:
+                    self.addText('{name:<17}{description:<}'.format(**cmd))
+            else:
+                self.addText("Invalid argument. It must be only one available command")
 
             self.addText('')
             self.textEdit.clear()
@@ -361,7 +384,6 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             myself[2] = datetime.fromtimestamp(myself[2]).strftime('%Y/%m/%d %H:%M:%S')
             myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
 
-            # 3 - admin, 2 - moderator, 1 - user
             if myself[1] == 3:
                 myself[1] = "Administrator"
             elif myself[1] == 2:
