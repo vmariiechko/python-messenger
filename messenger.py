@@ -4,6 +4,7 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox
 from clicklabel import clickable
+from client_commands import helpClient, online, status, myself, reg, role, ban, unban  # import * ?
 
 
 class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
@@ -35,11 +36,12 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             "passwordOutOfRange": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password '
                                   'must be between 4 and 20 in length</span></p></body></html> ',
             "notAlphanumeric": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Login can '
-                             'only contain alphanumeric characters</span></p></body></html>',
+                               'only contain alphanumeric characters</span></p></body></html>',
             "banned": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Account '
-                               'was banned</span></p></body></html>',
+                      'was banned</span></p></body></html>',
         }
         self.server_commands = []
+        self.run_server_command = {}
         self.client_commands = [
             {'name': 'close', 'description': 'Close the messenger',
              'detailed': '#Usage: /close\n'
@@ -100,7 +102,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 print(e)
                 raise SystemExit
             self.goToLogin()
-            self.username = None        # Unexpected self.username dissapear (when this line was before goToLogin)
+            self.username = None  # Unexpected self.username dissapear (when this line was before goToLogin)
             self.textEdit.clear()
             self.textBrowser.clear()
             self.last_message_time = 0  # TODO create refresh method to reset everything
@@ -228,7 +230,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.loginLine1.setStyleSheet("border: 1px solid red")
             return
 
-        print("Login: " + self.username)    # Unexpected self.username dissapear
+        print("Login: " + self.username)  # Unexpected self.username dissapear
 
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
@@ -252,6 +254,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             return
 
         self.server_commands = response.json()['output']
+
+        for cmd in self.server_commands:
+            if cmd['name'] != 'help': self.run_server_command[f"{cmd['name']}"] = globals()[cmd['name']]
 
     def send(self):
         text = self.textEdit.toPlainText()
@@ -283,38 +288,22 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         command = cmd_string.split()[0]
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
+        print("Command: " + self.username)  # Unexpected self.username dissapear.
+
         if command in [cmd['name'] for cmd in self.client_commands]:
             self.run_client_command.get(command)()
             self.textEdit.clear()
             return
 
-        print("Command: " + self.username)     # Unexpected self.username dissapear
-
-        if command not in [cmd['name'] for cmd in self.server_commands]:
-            self.addText(f"Command '/{command}' not found.")
-            self.addText("Try '/help' to list all available commands :)\n")
+        elif command not in [cmd['name'] for cmd in self.server_commands]:
+            self.addText(f"Command '/{command}' not found.\n"
+                         f"Try '/help' to list all available commands :)\n")
             self.textEdit.clear()
             return
 
         elif command == 'help':
-            all_commands = self.server_commands + self.client_commands
-            if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
-                detailed_info = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
-                self.addText('=' * 41)  # -77, #34, _46, =41
-                self.addText(detailed_info[0])
-                self.addText('=' * 41)
-            elif not args:
-                self.addText("#Enter '/help [command]' to print detailed description of specific command\n")
-                self.addText(f"{'Command':<15}Description")
-                for cmd in self.client_commands:
-                    self.addText('{name:<17}{description:<}'.format(**cmd))
-
-                for cmd in self.server_commands:
-                    self.addText('{name:<17}{description:<}'.format(**cmd))
-            else:
-                self.addText("Invalid argument. It must be only one available command")
-
-            self.addText('')
+            output = helpClient(self.client_commands, self.server_commands, args)
+            self.addText(output)
             self.textEdit.clear()
             return
 
@@ -332,84 +321,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.textEdit.clear()
             return
 
-        if command == 'online':
-            users = response.json()['output']
-            reg_usernames = [user[0] for user in users]
-            users_info = ''
+        output = self.run_server_command.get(command)(response.json()['output'], args)
 
-            if args:
-                args = list(dict.fromkeys(args))
-
-                if len(args) > len(users):
-                    unregistered = [user for user in args if user not in reg_usernames]
-                    not_exist = ', '.join(unregistered)
-                    if len(unregistered) > 1:
-                        self.addText("They aren't registered:")
-                        self.addText(not_exist)
-                        self.addText("You can type '/reg' to see registered users\n")
-                    else:
-                        self.addText(f"{not_exist} isn't registered\n")
-
-                for user in users:
-                    if user[1] == 1:
-                        users_info += f"{user[0]} is online\n"
-                    else:
-                        beauty_time = datetime.fromtimestamp(user[2])
-                        beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
-                        users_info += f"{user[0]} was online at {beauty_time}\n"
-
-                if users_info:
-                    self.addText(users_info)
-
-            else:
-                online_count = len(reg_usernames)
-
-                if online_count > 1:
-                    users_info = ', '.join(reg_usernames)
-                    self.addText(f"There are currently {online_count} users online:")
-                    self.addText(users_info + "\n")
-                else:
-                    self.addText("Nobody is online now apart of you\n")
-
-        elif command == 'status':
-            status = response.json()['output']
-            self.addText("######Server Status######")
-            self.addText(f"Server date&time: {status['time']}")
-            self.addText(f"Registered users: {status['users_count']}")
-            self.addText(f"Written messages: {status['messages_count']}\n")
-
-        elif command == 'myself':
-            myself = response.json()['output']
-
-            myself[2] = datetime.fromtimestamp(myself[2]).strftime('%Y/%m/%d %H:%M:%S')
-            myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
-
-            if myself[1] == 3:
-                myself[1] = "Administrator"
-            elif myself[1] == 2:
-                myself[1] = "Moderator"
-            else:
-                myself[1] = "User"
-
-            self.addText("######Your information######")
-            self.addText(f"Your id: {myself[0]}")
-            self.addText(f"Role: {myself[1]}")
-            self.addText(f"Registration date&time: {myself[2]}")
-            self.addText(f"Previous activity: {myself[3]}\n")
-
-        elif command == 'reg':
-            all_usernames = response.json()['output']
-            all_usernames = sum(all_usernames, [])
-            all_usernames = ', '.join([user for user in all_usernames])
-            self.addText(f"Registered users: {all_usernames}\n")
-
-        elif command == 'role':
-            updated = response.json()['output']
-            self.addText(args[0] + updated)
-
-        elif command in ('ban', 'unban'):
-            self.addText(response.json()['output'])
-
+        self.addText(output)
         self.textEdit.clear()
         self.textEdit.repaint()
 
