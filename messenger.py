@@ -102,7 +102,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 print(e)
                 raise SystemExit
             self.goToLogin()
-            self.username = None  # Unexpected self.username dissapear (when this line was before goToLogin)
+            self.username = None
             self.textEdit.clear()
             self.textBrowser.clear()
             self.last_message_time = 0  # TODO create refresh method to reset everything
@@ -230,8 +230,6 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.loginLine1.setStyleSheet("border: 1px solid red")
             return
 
-        print("Login: " + self.username)  # Unexpected self.username dissapear
-
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
         self.passwordLine1.clear()
@@ -270,7 +268,9 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.sendMessage(text)
 
     def sendMessage(self, text):
+
         print("Message: " + self.username)
+
         try:
             requests.post(
                 'http://127.0.0.1:5000/send',
@@ -288,7 +288,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         command = cmd_string.split()[0]
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
-        print("Command: " + self.username)  # Unexpected self.username dissapear.
+        print("Command: " + self.username)
 
         if command in [cmd['name'] for cmd in self.client_commands]:
             self.run_client_command.get(command)()
@@ -338,6 +338,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 verify=False
             )
             data = response.json()
+
         except requests.exceptions.RequestException as e:
             print(e)
             raise SystemExit
@@ -346,6 +347,7 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             # float -> datetime
             beauty_time = datetime.fromtimestamp(message['time'])
             beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
+
             self.addText(message['username'] + ' ' + beauty_time)
             self.addText(message['text'] + "\n")
             self.last_message_time = message['time']
