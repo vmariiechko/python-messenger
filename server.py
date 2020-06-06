@@ -1,8 +1,11 @@
-import sqlite3
-from database import *
 from datetime import datetime
+from sqlite3 import Binary
+
 from flask import Flask, request
+
 from server_commands import *
+from database import *
+
 
 app = Flask(__name__)
 
@@ -205,7 +208,7 @@ def signupUser():
 
     if query_data is None:
         password_hash = codec(password, 1)
-        password_hash = sqlite3.Binary(password_hash)
+        password_hash = Binary(password_hash)
         data_dict = {'username': username, 'password_hash': password_hash}
         create_user = f"INSERT INTO users (username, password_hash, registered)" \
                       f"VALUES (:username, :password_hash, strftime('%s','now'))"

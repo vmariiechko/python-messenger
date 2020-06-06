@@ -1,13 +1,15 @@
-import requests
-import clientui
+from requests import get, post, exceptions
 from datetime import datetime
+
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox
+
+from clientui import Ui_Messenger
+from client_commands import *
 from clicklabel import clickable
-from client_commands import helpClient, online, status, myself, reg, role, ban, unban  # import * ?
 
 
-class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
+class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -76,11 +78,11 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
         if reply == QMessageBox.Yes:
             try:
-                requests.post(
+                post(
                     'http://127.0.0.1:5000/logout',
                     json={"username": self.username}, verify=False
                 )
-            except requests.exceptions.RequestException as e:
+            except exceptions.RequestException as e:
                 print(e)
                 raise SystemExit
             event.accept()
@@ -94,11 +96,11 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
         if reply == QMessageBox.Yes:
             try:
-                requests.post(
+                post(
                     'http://127.0.0.1:5000/logout',
                     json={"username": self.username}, verify=False
                 )
-            except requests.exceptions.RequestException as e:
+            except exceptions.RequestException as e:
                 print(e)
                 raise SystemExit
             self.goToLogin()
@@ -151,12 +153,12 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             return
 
         try:
-            response = requests.post(
+            response = post(
                 'http://127.0.0.1:5000/signup',
                 auth=(self.username, self.password),
                 verify=False
             )
-        except requests.exceptions.RequestException as e:
+        except exceptions.RequestException as e:
             print(e)
             raise SystemExit
 
@@ -208,12 +210,12 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
                 return
 
         try:
-            response = requests.post(
+            response = post(
                 'http://127.0.0.1:5000/auth',
                 auth=(self.username, self.password),
                 verify=False
             )
-        except requests.exceptions.RequestException as e:
+        except exceptions.RequestException as e:
             print(e)
             raise SystemExit
 
@@ -238,11 +240,11 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
 
     def getServerCommands(self):
         try:
-            response = requests.post(
+            response = post(
                 'http://127.0.0.1:5000/command',
                 json={"username": self.username, "command": 'help'}, verify=False
             )
-        except requests.exceptions.RequestException as e:
+        except exceptions.RequestException as e:
             print(e)
             raise SystemExit
 
@@ -272,12 +274,12 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
         print("Message: " + self.username)
 
         try:
-            requests.post(
+            post(
                 'http://127.0.0.1:5000/send',
                 json={"username": self.username, "text": text},
                 verify=False
             )
-        except requests.exceptions.RequestException as e:
+        except exceptions.RequestException as e:
             print(e)
             raise SystemExit
 
@@ -308,11 +310,11 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             return
 
         try:
-            response = requests.post(
+            response = post(
                 'http://127.0.0.1:5000/command',
                 json={"username": self.username, "command": cmd_string}, verify=False
             )
-        except requests.exceptions.RequestException as e:
+        except exceptions.RequestException as e:
             print(e)
             raise SystemExit
 
@@ -321,7 +323,8 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             self.textEdit.clear()
             return
 
-        output = self.run_server_command.get(command)(response.json()['output'], args)
+        run_command = self.run_server_command.get(command)
+        output = run_command(response.json()['output'], args)
 
         self.addText(output)
         self.textEdit.clear()
@@ -332,14 +335,14 @@ class MessengerWindow(QtWidgets.QMainWindow, clientui.Ui_Messenger):
             return
 
         try:
-            response = requests.get(
+            response = get(
                 'http://127.0.0.1:5000/messages',
                 params={'after': self.last_message_time},
                 verify=False
             )
             data = response.json()
 
-        except requests.exceptions.RequestException as e:
+        except exceptions.RequestException as e:
             print(e)
             raise SystemExit
 

@@ -1,14 +1,14 @@
-import sqlite3
-import bcrypt
-import os
+from os import path
+from sqlite3 import Error, connect
+
+from bcrypt import hashpw, checkpw, gensalt
 from cryptography.fernet import Fernet
-from sqlite3 import Error
 
 
 def createConnection(path):
     connection = None
     try:
-        connection = sqlite3.connect(path)
+        connection = connect(path)
     except Error as e:
         print(f"The error '{e}' occurred")
 
@@ -45,7 +45,7 @@ def executeReadQuery(connection, query, flag=1, data=None):
 
 
 def codec(password, flag):
-    if not os.path.exists('../key'):
+    if not path.exists('../key'):
         key = generateKey()
     else:
         with open('../key', 'rb') as file:
@@ -69,9 +69,9 @@ def generateKey():
 
 
 def hashPassword(password):
-    password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    password_hash = hashpw(password.encode(), gensalt())
     return password_hash
 
 
 def checkPassword(password, hashed):
-    return bcrypt.checkpw(password, hashed)
+    return checkpw(password, hashed)
