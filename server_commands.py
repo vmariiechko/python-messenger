@@ -100,6 +100,7 @@ def online(username, args=None):
                        f"FROM users " \
                        f"WHERE username IN ({','.join(['?'] * len(args))})"
         query_data = executeReadQuery(connection, select_users, 1, args)
+
     else:
         query_data = executeReadQuery(connection, select_queries['select_active_users'])
 
@@ -157,7 +158,7 @@ def role(username, args):
     elif len(args) != 2:
         return {'ok': False, 'result': "Enter username"}
     elif username is None:
-        return {'ok': False, 'result': "Messenger Error: can't detect your username"}
+        return {'ok': False, 'result': "Can't detect your username"}
 
     all_usernames = reg()
     user = args[0]

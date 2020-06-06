@@ -209,10 +209,12 @@ def signupUser():
     if query_data is None:
         password_hash = codec(password, 1)
         password_hash = Binary(password_hash)
+
         data_dict = {'username': username, 'password_hash': password_hash}
         create_user = f"INSERT INTO users (username, password_hash, registered)" \
                       f"VALUES (:username, :password_hash, strftime('%s','now'))"
         executeQuery(connection, create_user, data_dict)
+
     else:
         connection.close()
         return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
@@ -237,10 +239,8 @@ def runCommand():
     """
     username = request.json["username"]
     cmd_with_args = request.json["command"]
-    cmd_with_args = cmd_with_args.split()
 
-    print("Server: ")
-    print(username)
+    cmd_with_args = cmd_with_args.split()
 
     command = cmd_with_args[0]
     args = cmd_with_args[1:] if len(cmd_with_args) > 1 else None
@@ -285,10 +285,12 @@ def logoutUser():
 
     if username:
         connection = createConnection("data.sqlite3")
+
         logout_user = f"UPDATE users " \
                       f"SET is_active = 0, last_active = strftime('%s','now')" \
                       f"WHERE username LIKE :username"
         executeQuery(connection, logout_user, {'username': username})
+
         connection.close()
 
     return {"ok": True}

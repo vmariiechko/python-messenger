@@ -7,10 +7,10 @@ def helpClient(client_commands, server_commands, args):
     if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
         detailed_info = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
 
-        # -77, #34, _46, =41
         output = '=' * 41 + '\n'
         output += detailed_info[0] + '\n'
         output += '=' * 41 + '\n'
+
         return output
 
     elif not args:
@@ -26,8 +26,9 @@ def helpClient(client_commands, server_commands, args):
 
         output += '=' * 41 + '\n'
         return output
+
     else:
-        return "Invalid argument. It must be only one available command\n"
+        return "Error: Invalid argument. It must be only one available command from '/help' list\n"
 
 
 def online(users, args):
@@ -41,17 +42,20 @@ def online(users, args):
         if len(args) > len(users):
             unregistered = [user for user in args if user not in reg_usernames]
             not_exist = ', '.join(unregistered)
+
             if len(unregistered) > 1:
-                output = f"They aren't registered:\n" \
+                output = f"Error: They aren't registered:\n" \
                          f"{not_exist}\n" \
                          f"You can type '/reg' to see registered users\n\n"
+
             else:
-                output = f"{not_exist} isn't registered\n" \
+                output = f"Error: {not_exist} isn't registered\n" \
                          f"You can type '/reg' to see registered users\n\n"
 
         for user in users:
             if user[1] == 1:
                 users_info += f"{user[0]} is online\n"
+
             else:
                 beauty_time = datetime.fromtimestamp(user[2])
                 beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
@@ -69,6 +73,7 @@ def online(users, args):
             users_info = ', '.join(reg_usernames)
             return f"There are currently {online_count} users online:\n" \
                    f"{users_info}\n"
+
         else:
             return "Nobody is online now apart of you\n"
 
@@ -107,12 +112,12 @@ def reg(all_usernames, args):
 
 
 def role(updated, args):
-    return args[0] + updated
+    return "Success: " + args[0] + updated
 
 
 def ban(banned, args):
-    return banned
+    return "Success: " + banned
 
 
 def unban(unbanned, args):
-    return unbanned
+    return "Success: " + unbanned

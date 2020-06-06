@@ -72,9 +72,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         return super().eventFilter(obj, event)
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Quit',
-                                     "Are you sure to quit?", QMessageBox.Yes |
-                                     QMessageBox.No, QMessageBox.Yes)
+        reply = QMessageBox.question(self, 'Quit', "Are you sure to quit?",
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
             try:
@@ -85,14 +84,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             except exceptions.RequestException as e:
                 print(e)
                 raise SystemExit
+
             event.accept()
         else:
             event.ignore()
 
     def logout(self):
-        reply = QMessageBox.question(self, 'Logout',
-                                     "Are you sure to logout?", QMessageBox.Yes |
-                                     QMessageBox.No, QMessageBox.Yes)
+        reply = QMessageBox.question(self, 'Logout', "Are you sure to logout?",
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
             try:
@@ -103,13 +102,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             except exceptions.RequestException as e:
                 print(e)
                 raise SystemExit
+
             self.goToLogin()
             self.username = None
             self.textEdit.clear()
             self.textBrowser.clear()
             self.last_message_time = 0  # TODO create refresh method to reset everything
         else:
-            pass
+            return
 
     def reload(self):
         self.textBrowser.clear()
@@ -122,6 +122,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.stackedWidget.setCurrentIndex(0)
 
     def signUpUser(self):
+        # TODO create method for double refreshing of labels (signup and login)
         self.loginError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
         self.passwordError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
         self.loginLine2.setStyleSheet("border: 1px solid #B8B5B2")
@@ -270,9 +271,6 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.sendMessage(text)
 
     def sendMessage(self, text):
-
-        print("Message: " + self.username)
-
         try:
             post(
                 'http://127.0.0.1:5000/send',
@@ -290,15 +288,13 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         command = cmd_string.split()[0]
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
-        print("Command: " + self.username)
-
         if command in [cmd['name'] for cmd in self.client_commands]:
             self.run_client_command.get(command)()
             self.textEdit.clear()
             return
 
         elif command not in [cmd['name'] for cmd in self.server_commands]:
-            self.addText(f"Command '/{command}' not found.\n"
+            self.addText(f"Error: Command '/{command}' not found.\n"
                          f"Try '/help' to list all available commands :)\n")
             self.textEdit.clear()
             return
@@ -319,7 +315,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             raise SystemExit
 
         if not response.json()['ok']:
-            self.addText(response.json()['output'] + "\n")
+            self.addText("Error: " + response.json()['output'] + "\n")
             self.textEdit.clear()
             return
 
@@ -341,7 +337,6 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                 verify=False
             )
             data = response.json()
-
         except exceptions.RequestException as e:
             print(e)
             raise SystemExit
