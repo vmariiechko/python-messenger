@@ -72,12 +72,12 @@ def checkPermissions(username):
 def helpClient(username):
     role = checkPermissions(username)
 
-    if role[0] == 3:
-        return user_server_commands + moderator_server_commands + admin_server_commands
+    if role[0] == 1:
+        return user_server_commands
     elif role[0] == 2:
         return user_server_commands + moderator_server_commands
-    else:
-        return user_server_commands
+    elif role[0] == 3:
+        return user_server_commands + moderator_server_commands + admin_server_commands
 
 
 def myself(username, *args):
@@ -156,12 +156,14 @@ def role(username, args):
         return {'ok': False, 'result': "Role isn't specified"}
     elif len(args) != 2:
         return {'ok': False, 'result': "Enter username"}
+    elif username is None:
+        return {'ok': False, 'result': "Messenger Error: can't detect your username"}
 
-    all_usernames = reg(username)
+    all_usernames = reg()
     user = args[0]
 
     if user not in [usernames[0] for usernames in all_usernames]:
-        return {'ok': False, 'result': "User doesn't exist"}
+        return {'ok': False, 'result': f"{user} doesn't exist"}
 
     if user == username:
         return {'ok': False, 'result': "It's not allowed to change permissions for yourself"}

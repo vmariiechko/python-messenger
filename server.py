@@ -235,10 +235,9 @@ def runCommand():
     username = request.json["username"]
     cmd_with_args = request.json["command"]
     cmd_with_args = cmd_with_args.split()
-    permissions = checkPermissions(username)
 
-    print("Server Role: ")
-    print(permissions[0])
+    print("Server: ")
+    print(username)
 
     command = cmd_with_args[0]
     args = cmd_with_args[1:] if len(cmd_with_args) > 1 else None
@@ -253,22 +252,8 @@ def runCommand():
 
         return {'ok': True, 'output': output}
 
-    elif command in [cmd['name'] for cmd in moderator_server_commands]:
-        if permissions[0] < 2:
-            return {'ok': False, 'output': 'An error occured'}
-        elif not args:
-            return {'ok': False, 'output': 'Argument must be specified'}
-
-        func = run_command.get(command)
-
-        output = func(username, args)
-
-        return {'ok': output['ok'], 'output': output['result']}
-
-    elif command in [cmd['name'] for cmd in admin_server_commands]:
-        if permissions[0] != 3:
-            return {'ok': False, 'output': 'An error occured'}
-        elif not args:
+    elif command in [cmd['name'] for cmd in moderator_server_commands + admin_server_commands]:
+        if not args:
             return {'ok': False, 'output': 'Argument must be specified'}
 
         func = run_command.get(command)
