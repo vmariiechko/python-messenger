@@ -53,7 +53,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                          'Ask you to logout account.'},
             {'name': 'reload', 'description': 'Clear commands messages',
              'detailed': '#Usage: /reload\n'
-                         'Clear all commands messages.'},
+                         'Clear all commands` messages.'},
         ]
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
@@ -107,7 +107,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.username = None
             self.textEdit.clear()
             self.textBrowser.clear()
-            self.last_message_time = 0  # TODO create refresh method to reset everything
+            self.last_message_time = 0
         else:
             return
 
@@ -122,7 +122,6 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.stackedWidget.setCurrentIndex(0)
 
     def signUpUser(self):
-        # TODO create method for double refreshing of labels (signup and login)
         self.loginError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
         self.passwordError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
         self.loginLine2.setStyleSheet("border: 1px solid #B8B5B2")
