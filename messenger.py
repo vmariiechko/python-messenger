@@ -104,12 +104,15 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                 raise SystemExit
 
             self.goToLogin()
-            self.username = None
-            self.textEdit.clear()
-            self.textBrowser.clear()
-            self.last_message_time = 0
+            self.clearUserData()
         else:
             return
+
+    def clearUserData(self):
+        self.username = None
+        self.textEdit.clear()
+        self.textBrowser.clear()
+        self.last_message_time = 0
 
     def reload(self):
         self.textBrowser.clear()
