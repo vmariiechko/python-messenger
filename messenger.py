@@ -121,6 +121,13 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def goToLogin(self):
         self.stackedWidget.setCurrentIndex(0)
 
+    def clearCredentials(self):
+        self.passwordLine1.clear()
+        self.loginLine1.clear()
+        self.passwordLine2.clear()
+        self.loginLine2.clear()
+        self.password = None
+
     def signUpUser(self):
         self.loginError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
         self.passwordError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
@@ -180,9 +187,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
-        self.passwordLine2.clear()
-        self.loginLine2.clear()
-        self.password = None
+        self.clearCredentials()
 
     def loginUser(self):
         self.loginError1.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
@@ -234,9 +239,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
-        self.passwordLine1.clear()
-        self.loginLine1.clear()
-        self.password = None
+        self.clearCredentials()
 
     def getServerCommands(self):
         try:
