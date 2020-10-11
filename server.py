@@ -6,6 +6,7 @@ from flask import Flask, request
 # import messages_overflow
 from server_commands import *
 from database import *
+from codec import *
 
 app = Flask(__name__)
 
