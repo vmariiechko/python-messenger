@@ -101,7 +101,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                 )
             except exceptions.RequestException as e:
                 print(e)
-                raise SystemExit
+                self.serverIsOff()
+                self.clearUserData()
+                return
 
             self.goToLogin()
             self.clearUserData()
@@ -130,6 +132,10 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.passwordLine2.clear()
         self.loginLine2.clear()
         self.password = None
+
+    def serverIsOff(self):
+        QMessageBox.critical(self, 'Opsss...', "The server is offline")
+        self.goToLogin()
 
     def signUpUser(self):
         self.loginError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
@@ -170,7 +176,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            raise SystemExit
+            self.serverIsOff()
+            self.clearCredentials()
+            return
 
         if response.json()['loginOutOfRange']:
             self.loginError2.setText(self._translate("Messenger", self.warningMessages['loginOutOfRange']))
@@ -225,7 +233,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            raise SystemExit
+            self.serverIsOff()
+            self.clearCredentials()
+            return
 
         if not response.json()['exist']:
             self.loginError1.setText(self._translate("Messenger", self.warningMessages['invalidLogin']))
@@ -252,7 +262,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            raise SystemExit
+            self.clearUserData()
+            self.serverIsOff()
+            return
 
         if not response.json()['ok']:
             self.addText(response.json()['output'] + "\n")
@@ -284,7 +296,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            raise SystemExit
+            self.clearUserData()
+            self.serverIsOff()
+            return
 
         self.textEdit.clear()
         self.textEdit.repaint()
@@ -317,7 +331,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            raise SystemExit
+            self.clearUserData()
+            self.serverIsOff()
+            return
 
         if not response.json()['ok']:
             self.addText("Error: " + response.json()['output'] + "\n")
@@ -344,7 +360,9 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             data = response.json()
         except exceptions.RequestException as e:
             print(e)
-            raise SystemExit
+            self.clearUserData()
+            self.serverIsOff()
+            return
 
         for message in data['messages']:
             # float -> datetime
