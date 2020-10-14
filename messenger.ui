@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Messenger</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../Downloads/messenger.png</normaloff>../../../../Downloads/messenger.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
@@ -83,6 +87,9 @@
         <pointsize>16</pointsize>
        </font>
       </property>
+      <property name="statusTip">
+       <string>Log in to your account</string>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -129,6 +136,9 @@
        <font>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="statusTip">
+       <string>Go to registration form</string>
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel:hover#signUpLabel
@@ -180,6 +190,9 @@
         <pointsize>16</pointsize>
        </font>
       </property>
+      <property name="statusTip">
+       <string>Create new account</string>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -221,6 +234,9 @@
        <font>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="statusTip">
+       <string>Go to login form</string>
       </property>
       <property name="styleSheet">
        <string notr="true">QLabel:hover#loginLabel
@@ -333,6 +349,120 @@
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>410</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+     <italic>false</italic>
+    </font>
+   </property>
+   <widget class="QMenu" name="menuMessenger">
+    <property name="title">
+     <string>Messenger</string>
+    </property>
+    <addaction name="actionAccount"/>
+    <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
+    <addaction name="actionLogout"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionShortcuts"/>
+    <addaction name="actionCommands"/>
+    <addaction name="separator"/>
+    <addaction name="actionContacts"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuMessenger"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionShortcuts">
+   <property name="text">
+    <string>Shortcuts</string>
+   </property>
+   <property name="statusTip">
+    <string>Show available shortcuts</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionCommands">
+   <property name="text">
+    <string>Commands</string>
+   </property>
+   <property name="statusTip">
+    <string>Show available commands</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="statusTip">
+    <string>Show messenger information</string>
+   </property>
+  </action>
+  <action name="actionAccount">
+   <property name="text">
+    <string>Account</string>
+   </property>
+   <property name="statusTip">
+    <string>Open account settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="statusTip">
+    <string>Quit messenger</string>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+   <property name="statusTip">
+    <string>Logout from account</string>
+   </property>
+  </action>
+  <action name="actionContacts">
+   <property name="text">
+    <string>Contacts</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+   <property name="statusTip">
+    <string>Edit messenger settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
