@@ -158,6 +158,7 @@ class Ui_Messenger(object):
         self.actionClose = QtWidgets.QAction(Messenger)
         self.actionClose.setObjectName("actionClose")
         self.actionLogout = QtWidgets.QAction(Messenger)
+        self.actionLogout.setEnabled(False)
         self.actionLogout.setObjectName("actionLogout")
         self.actionContacts = QtWidgets.QAction(Messenger)
         self.actionContacts.setStatusTip("")

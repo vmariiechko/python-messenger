@@ -437,6 +437,9 @@
    </property>
   </action>
   <action name="actionLogout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Logout</string>
    </property>

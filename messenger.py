@@ -18,6 +18,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.signUpButton.pressed.connect(self.signUpUser)
         self.loginButton.pressed.connect(self.loginUser)
         self.textEdit.installEventFilter(self)
+        self.actionClose.triggered.connect(self.close)
+        self.actionLogout.triggered.connect(self.logout)
         self.last_message_time = 0
         self.username = None
         self.password = None
@@ -107,6 +109,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
             self.goToLogin()
             self.clearUserData()
+            self.actionLogout.setEnabled(False)
         else:
             return
 
@@ -198,6 +201,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
+        self.actionLogout.setEnabled(True)
         self.clearCredentials()
 
     def loginUser(self):
@@ -252,6 +256,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
+        self.actionLogout.setEnabled(True)
         self.clearCredentials()
 
     def getServerCommands(self):
