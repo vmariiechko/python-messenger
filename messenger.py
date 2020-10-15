@@ -4,9 +4,10 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox
 
-from clientui import Ui_Messenger
 from client_commands import *
+from client_content import *
 from clicklabel import clickable
+from client_ui import Ui_Messenger
 
 
 class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
@@ -14,12 +15,19 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         super().__init__()
         self.setupUi(self)
         self._translate = QtCore.QCoreApplication.translate
+
         self.sendButton.pressed.connect(self.send)
         self.signUpButton.pressed.connect(self.signUpUser)
         self.loginButton.pressed.connect(self.loginUser)
-        self.textEdit.installEventFilter(self)
-        self.actionClose.triggered.connect(self.close)
+
+        self.actionShortcuts.triggered.connect(self.showShortcutsBox)
+        self.actionCommands.triggered.connect(self.showCommandsBox)
+        self.actionAbout.triggered.connect(self.showAboutBox)
+        self.actionContacts.triggered.connect(self.showContactsBox)
         self.actionLogout.triggered.connect(self.logout)
+        self.actionClose.triggered.connect(self.close)
+
+        self.textEdit.installEventFilter(self)
         self.last_message_time = 0
         self.username = None
         self.password = None
@@ -44,8 +52,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             "banned": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Account '
                       'was banned</span></p></body></html>',
         }
-        self.server_commands = []
-        self.run_server_command = {}
+        self.messageBoxText = getMessageBoxText()
         self.client_commands = [
             {'name': 'close', 'description': 'Close the messenger',
              'detailed': '#Usage: /close\n'
@@ -60,6 +67,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
                                    'reload': self.reload}
+        self.server_commands = []
+        self.run_server_command = {}
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.getUpdates)
         self.timer.start(1000)
@@ -74,7 +83,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         return super().eventFilter(obj, event)
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Quit', "Are you sure to quit?",
+        reply = QMessageBox.question(self, 'Quit', self.messageBoxText["close"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
@@ -92,7 +101,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             event.ignore()
 
     def logout(self):
-        reply = QMessageBox.question(self, 'Logout', "Are you sure to logout?",
+        reply = QMessageBox.question(self, 'Logout', self.messageBoxText["logout"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
@@ -103,7 +112,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                 )
             except exceptions.RequestException as e:
                 print(e)
-                self.serverIsOff()
+                self.showServerOffBox()
                 self.clearUserData()
                 return
 
@@ -136,9 +145,21 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.loginLine2.clear()
         self.password = None
 
-    def serverIsOff(self):
-        QMessageBox.critical(self, 'Opsss...', "The server is offline")
+    def showAboutBox(self):
+        QMessageBox.information(self, 'About', self.messageBoxText["about"])
+
+    def showContactsBox(self):
+        QMessageBox.information(self, 'Contacts', self.messageBoxText["contacts"])
+
+    def showServerOffBox(self):
+        QMessageBox.critical(self, 'Opsss...', self.messageBoxText["serverIsOff"])
         self.goToLogin()
+
+    def showShortcutsBox(self):
+        QMessageBox.information(self, 'Shortcuts', self.messageBoxText["shortcuts"])
+
+    def showCommandsBox(self):
+        QMessageBox.information(self, 'Commands', self.messageBoxText["commands"])
 
     def signUpUser(self):
         self.loginError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
@@ -179,7 +200,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            self.serverIsOff()
+            self.showServerOffBox()
             self.clearCredentials()
             return
 
@@ -237,7 +258,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             )
         except exceptions.RequestException as e:
             print(e)
-            self.serverIsOff()
+            self.showServerOffBox()
             self.clearCredentials()
             return
 
@@ -268,7 +289,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         except exceptions.RequestException as e:
             print(e)
             self.clearUserData()
-            self.serverIsOff()
+            self.showServerOffBox()
             return
 
         if not response.json()['ok']:
@@ -302,7 +323,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         except exceptions.RequestException as e:
             print(e)
             self.clearUserData()
-            self.serverIsOff()
+            self.showServerOffBox()
             return
 
         self.textEdit.clear()
@@ -337,7 +358,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         except exceptions.RequestException as e:
             print(e)
             self.clearUserData()
-            self.serverIsOff()
+            self.showServerOffBox()
             return
 
         if not response.json()['ok']:
@@ -366,7 +387,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         except exceptions.RequestException as e:
             print(e)
             self.clearUserData()
-            self.serverIsOff()
+            self.showServerOffBox()
             return
 
         for message in data['messages']:
