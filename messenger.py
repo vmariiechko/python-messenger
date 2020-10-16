@@ -28,50 +28,22 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.actionClose.triggered.connect(self.close)
 
         self.textEdit.installEventFilter(self)
-        self.last_message_time = 0
         self.username = None
         self.password = None
-        self.warningMessages = {
-            "emptyStr": '<html><head/><body><p><br/></p></body></html>',
-            "registered": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Username '
-                          'is already registered</span></p></body></html> ',
-            "loginRequired": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Login is '
-                             'required</span></p></body></html>',
-            "invalidLogin": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Username '
-                            'doesn\'t exist</span></p></body></html> ',
-            "loginOutOfRange": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Username '
-                               'must be between 4 and 20 in length</span></p></body></html> ',
-            "passwordRequired": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password is '
-                                'required</span></p></body></html> ',
-            "invalidPassword": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password '
-                               'doesn\'t match</span></p></body></html> ',
-            "passwordOutOfRange": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Password '
-                                  'must be between 4 and 20 in length</span></p></body></html> ',
-            "notAlphanumeric": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Login can '
-                               'only contain alphanumeric characters</span></p></body></html>',
-            "banned": '<html><head/><body><p><span style=" font-style:italic; color:#ef2929;">Account '
-                      'was banned</span></p></body></html>',
-        }
-        self.messageBoxText = getMessageBoxText()
-        self.client_commands = [
-            {'name': 'close', 'description': 'Close the messenger',
-             'detailed': '#Usage: /close\n'
-                         'Ask you to close messenger.'},
-            {'name': 'logout', 'description': 'Logout account',
-             'detailed': '#Usage: /logout\n'
-                         'Ask you to logout account.'},
-            {'name': 'reload', 'description': 'Clear commands messages',
-             'detailed': '#Usage: /reload\n'
-                         'Clear all commands` messages.'},
-        ]
+        self.last_message_time = 0
+        self.warning_messages = getWarningMessages()
+        self.message_box_text = getMessageBoxText()
+        self.client_commands = getClientCommands()
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
                                    'reload': self.reload}
         self.server_commands = []
         self.run_server_command = {}
+
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.getUpdates)
         self.timer.start(1000)
+        
         clickable(self.signUpLabel).connect(self.goToRegistration)
         clickable(self.loginLabel).connect(self.goToLogin)
 
@@ -83,7 +55,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         return super().eventFilter(obj, event)
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Quit', self.messageBoxText["close"],
+        reply = QMessageBox.question(self, 'Quit', self.message_box_text["close"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
@@ -101,7 +73,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             event.ignore()
 
     def logout(self):
-        reply = QMessageBox.question(self, 'Logout', self.messageBoxText["logout"],
+        reply = QMessageBox.question(self, 'Logout', self.message_box_text["logout"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
         if reply == QMessageBox.Yes:
@@ -146,24 +118,24 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.password = None
 
     def showAboutBox(self):
-        QMessageBox.information(self, 'About', self.messageBoxText["about"])
+        QMessageBox.information(self, 'About', self.message_box_text["about"])
 
     def showContactsBox(self):
-        QMessageBox.information(self, 'Contacts', self.messageBoxText["contacts"])
+        QMessageBox.information(self, 'Contacts', self.message_box_text["contacts"])
 
     def showServerOffBox(self):
-        QMessageBox.critical(self, 'Opsss...', self.messageBoxText["serverIsOff"])
+        QMessageBox.critical(self, 'Opsss...', self.message_box_text["serverIsOff"])
         self.goToLogin()
 
     def showShortcutsBox(self):
-        QMessageBox.information(self, 'Shortcuts', self.messageBoxText["shortcuts"])
+        QMessageBox.information(self, 'Shortcuts', self.message_box_text["shortcuts"])
 
     def showCommandsBox(self):
-        QMessageBox.information(self, 'Commands', self.messageBoxText["commands"])
+        QMessageBox.information(self, 'Commands', self.message_box_text["commands"])
 
     def signUpUser(self):
-        self.loginError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
-        self.passwordError2.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
+        self.loginError2.setText(self._translate("Messenger", self.warning_messages['emptyStr']))
+        self.passwordError2.setText(self._translate("Messenger", self.warning_messages['emptyStr']))
         self.loginLine2.setStyleSheet("border: 1px solid #B8B5B2")
         self.passwordLine2.setStyleSheet("border: 1px solid #B8B5B2")
         self.username = self.loginLine2.text()
@@ -171,23 +143,23 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         if not self.username:
             if not self.password:
-                self.loginError2.setText(self._translate("Messenger", self.warningMessages['loginRequired']))
-                self.passwordError2.setText(self._translate("Messenger", self.warningMessages['passwordRequired']))
+                self.loginError2.setText(self._translate("Messenger", self.warning_messages['loginRequired']))
+                self.passwordError2.setText(self._translate("Messenger", self.warning_messages['passwordRequired']))
                 self.loginLine2.setStyleSheet("border: 1px solid red")
                 self.passwordLine2.setStyleSheet("border: 1px solid red")
                 return
             else:
-                self.loginError2.setText(self._translate("Messenger", self.warningMessages['loginRequired']))
+                self.loginError2.setText(self._translate("Messenger", self.warning_messages['loginRequired']))
                 self.loginLine2.setStyleSheet("border: 1px solid red")
                 return
         else:
             if not self.password:
-                self.passwordError2.setText(self._translate("Messenger", self.warningMessages['passwordRequired']))
+                self.passwordError2.setText(self._translate("Messenger", self.warning_messages['passwordRequired']))
                 self.passwordLine2.setStyleSheet("border: 1px solid red")
                 return
 
         if not self.username.isalnum():
-            self.loginError2.setText(self._translate("Messenger", self.warningMessages['notAlphanumeric']))
+            self.loginError2.setText(self._translate("Messenger", self.warning_messages['notAlphanumeric']))
             self.loginError2.adjustSize()
             self.loginLine2.setStyleSheet("border: 1px solid red")
             return
@@ -205,17 +177,17 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         if response.json()['loginOutOfRange']:
-            self.loginError2.setText(self._translate("Messenger", self.warningMessages['loginOutOfRange']))
+            self.loginError2.setText(self._translate("Messenger", self.warning_messages['loginOutOfRange']))
             self.loginError2.adjustSize()
             self.loginLine2.setStyleSheet("border: 1px solid red")
             return
         elif response.json()['passwordOutOfRange']:
-            self.passwordError2.setText(self._translate("Messenger", self.warningMessages['passwordOutOfRange']))
+            self.passwordError2.setText(self._translate("Messenger", self.warning_messages['passwordOutOfRange']))
             self.passwordError2.adjustSize()
             self.passwordLine2.setStyleSheet("border: 1px solid red")
             return
         elif not response.json()['ok']:
-            self.loginError2.setText(self._translate("Messenger", self.warningMessages['registered']))
+            self.loginError2.setText(self._translate("Messenger", self.warning_messages['registered']))
             self.loginError2.adjustSize()
             self.loginLine2.setStyleSheet("border: 1px solid red")
             return
@@ -226,8 +198,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.clearCredentials()
 
     def loginUser(self):
-        self.loginError1.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
-        self.passwordError1.setText(self._translate("Messenger", self.warningMessages['emptyStr']))
+        self.loginError1.setText(self._translate("Messenger", self.warning_messages['emptyStr']))
+        self.passwordError1.setText(self._translate("Messenger", self.warning_messages['emptyStr']))
         self.loginLine1.setStyleSheet("border: 1px solid #B8B5B2")
         self.passwordLine1.setStyleSheet("border: 1px solid #B8B5B2")
         self.username = self.loginLine1.text()
@@ -235,18 +207,18 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         if not self.username:
             if not self.password:
-                self.loginError1.setText(self._translate("Messenger", self.warningMessages['loginRequired']))
-                self.passwordError1.setText(self._translate("Messenger", self.warningMessages['passwordRequired']))
+                self.loginError1.setText(self._translate("Messenger", self.warning_messages['loginRequired']))
+                self.passwordError1.setText(self._translate("Messenger", self.warning_messages['passwordRequired']))
                 self.loginLine1.setStyleSheet("border: 1px solid red")
                 self.passwordLine1.setStyleSheet("border: 1px solid red")
                 return
             else:
-                self.loginError1.setText(self._translate("Messenger", self.warningMessages['loginRequired']))
+                self.loginError1.setText(self._translate("Messenger", self.warning_messages['loginRequired']))
                 self.loginLine1.setStyleSheet("border: 1px solid red")
                 return
         else:
             if not self.password:
-                self.passwordError1.setText(self._translate("Messenger", self.warningMessages['passwordRequired']))
+                self.passwordError1.setText(self._translate("Messenger", self.warning_messages['passwordRequired']))
                 self.passwordLine1.setStyleSheet("border: 1px solid red")
                 return
 
@@ -263,15 +235,15 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         if not response.json()['exist']:
-            self.loginError1.setText(self._translate("Messenger", self.warningMessages['invalidLogin']))
+            self.loginError1.setText(self._translate("Messenger", self.warning_messages['invalidLogin']))
             self.loginLine1.setStyleSheet("border: 1px solid red")
             return
         if not response.json()['match']:
-            self.passwordError1.setText(self._translate("Messenger", self.warningMessages['invalidPassword']))
+            self.passwordError1.setText(self._translate("Messenger", self.warning_messages['invalidPassword']))
             self.passwordLine1.setStyleSheet("border: 1px solid red")
             return
         if response.json()['banned']:
-            self.loginError1.setText(self._translate("Messenger", self.warningMessages['banned']))
+            self.loginError1.setText(self._translate("Messenger", self.warning_messages['banned']))
             self.loginLine1.setStyleSheet("border: 1px solid red")
             return
 
