@@ -7,52 +7,52 @@ select_queries = {
 
 user_server_commands = [
     {'name': 'help', 'description': 'Prints available commands',
-     'detailed': '#Usage: /help <command>\n\n'
-                 'Prints available commands if no argument.\n'
-                 'Prints detailed description of <command> If argument <command> is specified.\n\n'
-                 '#Examples:\n'
-                 '/help  ->  prints all available commands\n'
-                 '/help reg  ->  prints detailed info about \'/reg\''},
+     'detailed': "<b>Usage:</b> /help *command*<br><br>"
+                 "Prints available commands if no argument.<br>"
+                 "Prints detailed description of *command* If argument *command* is specified.<br><br>"
+                 "<b>Examples:</b><br>"
+                 "/help  ->  prints all available commands<br>"
+                 "/help reg  ->  prints detailed info about '/reg'"},
     {'name': 'myself', 'description': 'Prints info about you',
-     'detailed': '#Usage: /myself\n'
-                 'Prints next information about you:\n'
+     'detailed': '<b>Usage:</b> /myself<br>'
+                 'Prints next information about you:<br>'
                  'ID, role, registration date, last activity.'},
     {'name': 'status', 'description': 'Prints server status',
-     'detailed': '#Usage: /status\n'
-                 'Prints next information about server:\n'
+     'detailed': '<b>Usage:</b> /status<br>'
+                 'Prints next information about server:<br>'
                  'Server time, registered users count, written messages count.'},
     {'name': 'online', 'description': 'Prints online users',
-     'detailed': '#Usage: /online <usernames>\n\n'
-                 'Prints online users if there are no argument.\n'
-                 'If <usernames> specified, prints users status.\n\n'
-                 '#Examples:\n'
-                 '/online  ->  prints all online users\n'
-                 '/online User1 User2  ->  prints User1 & User2 status'},
+     'detailed': "<b>Usage:</b> /online *usernames*<br><br>"
+                 "Prints online users if there are no argument.<br>"
+                 "If *usernames* specified, prints users' status.<br><br>"
+                 "<b>Examples:</b><br>"
+                 "/online  ->  prints all online users<br>"
+                 "/online User1 User2  ->  prints User1 & User2 status"},
     {'name': 'reg', 'description': 'Prints registered users',
-     'detailed': '#Usage: /reg\n'
+     'detailed': '<b>Usage:</b> /reg<br>'
                  'Prints usernames of all registered users.'},
 ]
 
 moderator_server_commands = [
     {'name': 'ban', 'description': 'Ban users',
-     'detailed': '#Usage: /ban <usernames>\n\n'
-                 'Ban specified <usernames>\n\n'
-                 '#Example:\n'
+     'detailed': '<b>Usage:</b> /ban *usernames*<br><br>'
+                 'Ban specified *usernames*<br><br>'
+                 '<b>Example:</b><br>'
                  '/ban User1 User2 -> ban User1 and User2'},
     {'name': 'unban', 'description': 'Unban users',
-     'detailed': '#Usage: /unban <usernames>\n\n'
-                 'Unban specified <usernames>\n\n'
-                 '#Example:\n'
+     'detailed': '<b>Usage:</b> /unban *usernames*<br><br>'
+                 'Unban specified *usernames*<br><br>'
+                 '<b>Example:</b><br>'
                  '/unban User1 User2 -> unban User1 and User2,'},
 ]
 
 admin_server_commands = [
     {'name': 'role', 'description': 'Change role of user',
-     'detailed': "#Usage: /role <username> <role>\n\n"
-                 "Change user permissions.\n"
-                 "Argument <role> can be '1', '2' or '3'\n"
-                 "Where 1-user, 2-moderator, 3-administrator\n\n"
-                 "#Example:\n"
+     'detailed': "<b>Usage:</b> /role *username* <role><br><br>"
+                 "Change user's permissions.<br>"
+                 "Argument *role* can be '1', '2' or '3'<br>"
+                 "Where 1-user, 2-moderator, 3-administrator<br><br>"
+                 "<b>Example:</b><br>"
                  "/role Bob 2  ->  change Bob's role to 'moderator'"},
 ]
 
@@ -133,14 +133,14 @@ def ban(username, args, flag=1):
                     f"WHERE username IN ({','.join(['?'] * len(args))})" \
                     f"AND role = 1"
         executeQuery(connection, ban_users, args)
-        result = 'Only users were banned\n'
+        result = 'Only users were banned<br>'
 
     else:
         unban_users = f"UPDATE users " \
                       f"SET is_banned = 0 " \
                       f"WHERE username IN ({','.join(['?'] * len(args))})"
         executeQuery(connection, unban_users, args)
-        result = 'Users were unbanned\n'
+        result = 'Users were unbanned<br>'
 
     connection.close()
     return {'ok': True, 'result': result}
@@ -178,4 +178,4 @@ def role(username, args):
     executeQuery(connection, update_role, data_dict)
 
     connection.close()
-    return {'ok': True, 'result': '\'s permissions was updated successfully\n'}
+    return {'ok': True, 'result': "'s permissions was updated successfully<br>"}

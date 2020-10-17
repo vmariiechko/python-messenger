@@ -150,6 +150,7 @@ class Ui_Messenger(object):
         self.actionShortcuts = QtWidgets.QAction(Messenger)
         self.actionShortcuts.setObjectName("actionShortcuts")
         self.actionCommands = QtWidgets.QAction(Messenger)
+        self.actionCommands.setEnabled(False)
         self.actionCommands.setObjectName("actionCommands")
         self.actionAbout = QtWidgets.QAction(Messenger)
         self.actionAbout.setObjectName("actionAbout")

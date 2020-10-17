@@ -7,28 +7,39 @@ def helpClient(client_commands, server_commands, args):
     if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
         detailed_info = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
 
-        output = '=' * 41 + '\n'
-        output += detailed_info[0] + '\n'
-        output += '=' * 41 + '\n'
+        output = '=' * 41 + '<br>'
+        output += detailed_info[0] + '<br>'
+        output += '=' * 41 + '<br>'
 
         return output
 
     elif not args:
-        output = '=' * 41 + '\n'
-        output += f"#Enter '/help <command>' to print detailed description of specific command\n\n" \
-                  f"{'Command':<15}Description\n"
+        output = '=' * 41 + '<br>'
+        output += "<b>Enter '/help *command*' to print detailed<br>description of specific command</b><br><br>"
+        output += "<span style=\"font-size: 14px\"><table>" \
+                    "<tr>" \
+                        "<th>Commands&nbsp;&nbsp;</th>" \
+                        "<th>Description</th>" \
+                    "</tr>"
 
         for cmd in client_commands:
-            output += '{name:<17}{description:<}'.format(**cmd) + '\n'
+            output += f"<tr>" \
+                        f"<td><code>{cmd['name']}</code></td>" \
+                        f"<td>{cmd['description']}</td>" \
+                      f"</tr>"
 
         for cmd in server_commands:
-            output += '{name:<17}{description:<}'.format(**cmd) + '\n'
+            output += f"<tr>" \
+                        f"<td><code>{cmd['name']}</code></td>" \
+                        f"<td>{cmd['description']}</td>" \
+                      f"</tr>"
 
-        output += '=' * 41 + '\n'
+        output += "</table></span>"
+        output += '=' * 41 + '<br>'
         return output
 
     else:
-        return "Error: Invalid argument. It must be only one available command from '/help' list\n"
+        return "<b>Error:</b> Invalid argument. It must be only one available command from '/help' list<br>"
 
 
 def online(users, args):
@@ -44,22 +55,22 @@ def online(users, args):
             not_exist = ', '.join(unregistered)
 
             if len(unregistered) > 1:
-                output = f"Error: They aren't registered:\n" \
-                         f"{not_exist}\n" \
-                         f"You can type '/reg' to see registered users\n\n"
+                output = f"<b>Error:</b> They aren't registered:<br>" \
+                         f"{not_exist}<br>" \
+                         f"You can type '/reg' to see registered users<br><br>"
 
             else:
-                output = f"Error: {not_exist} isn't registered\n" \
-                         f"You can type '/reg' to see registered users\n\n"
+                output = f"<b>Error:</b> {not_exist} isn't registered<br>" \
+                         f"You can type '/reg' to see registered users<br><br>"
 
         for user in users:
             if user[1] == 1:
-                users_info += f"{user[0]} is online\n"
+                users_info += f"<b>{user[0]}</b> is online<br>"
 
             else:
                 beauty_time = datetime.fromtimestamp(user[2])
                 beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
-                users_info += f"{user[0]} was online at {beauty_time}\n"
+                users_info += f"<b>{user[0]}</b> was online at {beauty_time}<br>"
 
         if users_info:
             return output + users_info
@@ -71,19 +82,19 @@ def online(users, args):
 
         if online_count > 1:
             users_info = ', '.join(reg_usernames)
-            return f"There are currently {online_count} users online:\n" \
-                   f"{users_info}\n"
+            return f"There are currently {online_count} users online:<br>" \
+                   f"<b>{users_info}</b><br>"
 
         else:
-            return "Nobody is online now apart of you\n"
+            return "<b>Nobody is online now apart of you</b><br>"
 
 
 def status(status, args):
-    return f"############ Server Status ############\n" \
-           f"Server date&time: {status['time']}\n" \
-           f"Registered users: {status['users_count']}\n" \
-           f"Written messages: {status['messages_count']}\n" + \
-           "#" * 34 + "\n"
+    return f"############ <b>Server Status</b> ############<br>" \
+           f"Server date&time: {status['time']}<br>" \
+           f"Registered users: {status['users_count']}<br>" \
+           f"Written messages: {status['messages_count']}<br>" + \
+           "#" * 34 + "<br>"
 
 
 def myself(myself, args):
@@ -97,27 +108,27 @@ def myself(myself, args):
     else:
         myself[1] = "User"
 
-    return f"########### Your information ###########\n" \
-           f"ID: {myself[0]}\n" \
-           f"Role: {myself[1]}\n" \
-           f"Registration date&time: {myself[2]}\n" \
-           f"Previous activity: {myself[3]}\n" + \
-           "#" * 34 + "\n"
+    return f"########### <b>Your information</b> ##########<br>" \
+           f"ID: {myself[0]}<br>" \
+           f"Role: {myself[1]}<br>" \
+           f"Registration date&time: {myself[2]}<br>" \
+           f"Previous activity: {myself[3]}<br>" + \
+           "#" * 34 + "<br>"
 
 
 def reg(all_usernames, args):
     all_usernames = sum(all_usernames, [])
     all_usernames = ', '.join([user for user in all_usernames])
-    return f"Registered users: {all_usernames}\n"
+    return f"<b>Registered users:</b> {all_usernames}<br>"
 
 
 def role(updated, args):
-    return "Success: " + args[0] + updated
+    return "<b>Success:</b> " + args[0] + updated
 
 
 def ban(banned, args):
-    return "Success: " + banned
+    return "<b>Success:</b> " + banned
 
 
 def unban(unbanned, args):
-    return "Success: " + unbanned
+    return "<b>Success:</b> " + unbanned

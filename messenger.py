@@ -91,6 +91,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.goToLogin()
             self.clearUserData()
             self.actionLogout.setEnabled(False)
+            self.actionCommands.setEnabled(False)
         else:
             return
 
@@ -131,7 +132,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         QMessageBox.information(self, 'Shortcuts', self.message_box_text["shortcuts"])
 
     def showCommandsBox(self):
-        QMessageBox.information(self, 'Commands', self.message_box_text["commands"])
+        output = helpClient(self.client_commands, self.server_commands, [])
+        QMessageBox.information(self, 'Commands', output)
 
     def signUpUser(self):
         self.loginError2.setText(self._translate("Messenger", self.warning_messages['emptyStr']))
@@ -195,6 +197,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
         self.actionLogout.setEnabled(True)
+        self.actionCommands.setEnabled(True)
         self.clearCredentials()
 
     def loginUser(self):
@@ -250,6 +253,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.getServerCommands()
         self.stackedWidget.setCurrentIndex(2)
         self.actionLogout.setEnabled(True)
+        self.actionCommands.setEnabled(True)
         self.clearCredentials()
 
     def getServerCommands(self):
@@ -311,7 +315,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         elif command not in [cmd['name'] for cmd in self.server_commands]:
-            self.addText(f"Error: Command '/{command}' not found.\n"
+            self.addText(f"<b>Error:</b> Command '/{command}' not found.\n"
                          f"Try '/help' to list all available commands :)\n")
             self.textEdit.clear()
             return
@@ -334,7 +338,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         if not response.json()['ok']:
-            self.addText("Error: " + response.json()['output'] + "\n")
+            self.addText("<b>Error:</b> " + response.json()['output'] + "\n")
             self.textEdit.clear()
             return
 

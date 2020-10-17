@@ -399,6 +399,9 @@
    </property>
   </action>
   <action name="actionCommands">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Commands</string>
    </property>

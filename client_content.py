@@ -24,13 +24,13 @@ def getWarningMessages():
 def getClientCommands():
     return [
             {'name': 'close', 'description': 'Close the messenger',
-             'detailed': '#Usage: /close\n'
+             'detailed': '<b>Usage:</b> /close<br>'
                          'Ask you to close messenger.'},
             {'name': 'logout', 'description': 'Logout account',
-             'detailed': '#Usage: /logout\n'
+             'detailed': '<b>Usage:</b> /logout<br>'
                          'Ask you to logout account.'},
             {'name': 'reload', 'description': 'Clear commands messages',
-             'detailed': '#Usage: /reload\n'
+             'detailed': '<b>Usage:</b> /reload<br>'
                          'Clear all commands` messages.'},
             ]
 
@@ -49,44 +49,6 @@ def getMessageBoxText():
                             "GitHub: <a href='https://github.com/marik348'>marik348</a>"
                         "</span> ",
             "serverIsOff": "<span style=\"font-size: 15px\">The server is offline</span>",
-            "commands": "<span style=\"font-size: 14px\"><table>"
-                            "<tr>"
-                                "<th>Commands&nbsp;&nbsp;</th>"
-                                "<th>Description</th>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>close</code></td>"
-                                "<td>Close the messenger</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>logout</code></td>"
-                                "<td>Logout account</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>reload</code></td>"
-                                "<td>Clear commands messages</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>help</code></td>"
-                                "<td>Prints available commands</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>myself</code></td>"
-                                "<td>Prints info about you</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>status</code></td>"
-                                "<td>Prints server statu</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>online</code></td>"
-                                "<td>Prints online userst</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td><code>reg</code></td>"
-                                "<td>Prints registered users</td>"
-                            "</tr>"
-                        "</table></span>",
             "shortcuts": "<span style=\"font-size: 14px\"><table>"
                             "<tr>"
                                 "<th>Shortcuts&nbsp;&nbsp;</th>"
