@@ -368,9 +368,6 @@
     <property name="title">
      <string>Messenger</string>
     </property>
-    <addaction name="actionAccount"/>
-    <addaction name="actionPreferences"/>
-    <addaction name="separator"/>
     <addaction name="actionLogout"/>
     <addaction name="actionClose"/>
    </widget>

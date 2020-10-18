@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'messenger.ui'
+# Form implementation generated from reading ui file 'client_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.2
 #
@@ -166,9 +166,6 @@ class Ui_Messenger(object):
         self.actionContacts.setObjectName("actionContacts")
         self.actionPreferences = QtWidgets.QAction(Messenger)
         self.actionPreferences.setObjectName("actionPreferences")
-        self.menuMessenger.addAction(self.actionAccount)
-        self.menuMessenger.addAction(self.actionPreferences)
-        self.menuMessenger.addSeparator()
         self.menuMessenger.addAction(self.actionLogout)
         self.menuMessenger.addAction(self.actionClose)
         self.menuHelp.addAction(self.actionShortcuts)
