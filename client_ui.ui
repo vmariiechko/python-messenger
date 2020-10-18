@@ -417,23 +417,15 @@
     <string>Show messenger information</string>
    </property>
   </action>
-  <action name="actionAccount">
-   <property name="text">
-    <string>Account</string>
-   </property>
-   <property name="statusTip">
-    <string>Open account settings</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
-   </property>
-  </action>
   <action name="actionClose">
    <property name="text">
     <string>Exit</string>
    </property>
    <property name="statusTip">
     <string>Quit messenger</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+E</string>
    </property>
   </action>
   <action name="actionLogout">
@@ -446,6 +438,9 @@
    <property name="statusTip">
     <string>Logout from account</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
   </action>
   <action name="actionContacts">
    <property name="text">
@@ -453,17 +448,6 @@
    </property>
    <property name="statusTip">
     <string/>
-   </property>
-  </action>
-  <action name="actionPreferences">
-   <property name="text">
-    <string>Preferences</string>
-   </property>
-   <property name="statusTip">
-    <string>Edit messenger settings</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
