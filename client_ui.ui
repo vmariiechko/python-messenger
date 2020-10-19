@@ -52,27 +52,6 @@
        <string>Login</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="passwordLine1">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>200</y>
-        <width>291</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
-      <property name="placeholderText">
-       <string>Password</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="loginButton">
       <property name="geometry">
        <rect>
@@ -198,27 +177,6 @@
       </property>
       <property name="text">
        <string>Sign Up</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="passwordLine2">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>200</y>
-        <width>291</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
-      <property name="placeholderText">
-       <string>Enter Your Password</string>
       </property>
      </widget>
      <widget class="QLabel" name="loginLabel">

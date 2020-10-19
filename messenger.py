@@ -3,6 +3,9 @@ from datetime import datetime
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtGui import QFont
+from qtwidgets import PasswordEdit
+
 
 from client_commands import *
 from client_content import *
@@ -16,6 +19,10 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.setupUi(self)
         self._translate = QtCore.QCoreApplication.translate
 
+        self.passwordLine1 = PasswordEdit(True, self.Login_page)
+        self.passwordLine2 = PasswordEdit(True, self.Registration_page)
+        self.modifyPasswordLines()
+
         self.sendButton.pressed.connect(self.send)
         self.signUpButton.pressed.connect(self.signUpUser)
         self.loginButton.pressed.connect(self.loginUser)
@@ -28,11 +35,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.actionClose.triggered.connect(self.close)
 
         self.textEdit.installEventFilter(self)
+
         self.username = None
         self.password = None
         self.last_message_time = 0
+
         self.warning_messages = getWarningMessages()
         self.message_box_text = getMessageBoxText()
+
         self.client_commands = getClientCommands()
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
@@ -94,6 +104,23 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.actionCommands.setEnabled(False)
         else:
             return
+
+    def modifyPasswordLines(self):
+        geometry = QtCore.QRect(60, 200, 291, 41)
+        font = QFont()
+        font.setPointSize(14)
+
+        self.passwordLine1.setGeometry(geometry)
+        self.passwordLine1.setFont(font)
+        self.passwordLine1.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.passwordLine1.setObjectName("passwordLine1")
+        self.passwordLine1.setPlaceholderText(self._translate("Messenger", "Password"))
+
+        self.passwordLine2.setGeometry(geometry)
+        self.passwordLine2.setFont(font)
+        self.passwordLine2.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.passwordLine2.setObjectName("passwordLine2")
+        self.passwordLine2.setPlaceholderText(self._translate("Messenger", "Enter Your Password"))
 
     def clearUserData(self):
         self.username = None
