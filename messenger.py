@@ -50,12 +50,18 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.server_commands = []
         self.run_server_command = {}
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.getUpdates)
-        self.timer.start(1000)
+        self.timerUpdates = QtCore.QTimer()
+        self.timerUpdates.timeout.connect(self.getUpdates)
+        self.timerUpdates.start(1000)
+
+        self.timerStatus = QtCore.QTimer()
+        self.timerStatus.timeout.connect(self.getStatus)
+        self.timerStatus.start(5000)
         
         clickable(self.signUpLabel).connect(self.goToRegistration)
         clickable(self.loginLabel).connect(self.goToLogin)
+
+        self.getStatus()
 
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
@@ -401,6 +407,33 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.addText(message['username'] + ' ' + beauty_time)
             self.addText(message['text'] + "\n")
             self.last_message_time = message['time']
+
+    def getStatus(self):
+        if self.stackedWidget.currentIndex() == 2:
+            return
+
+        try:
+            response = get(
+                'http://127.0.0.1:5000/status',
+                verify=False
+            )
+            status = response.json()
+        except exceptions.RequestException as e:
+            self.serverStatus.setText(self._translate("Messenger", '<p style="font-size:12px">'
+                                                                   '<img src="Images/server-is-off.png"> Offline</p>'))
+            tool_tip = f"Server isn't working<br>" \
+                       f"For more information please contact with developer using 'Contacts' tab in 'Help' menu above"
+            self.serverStatus.setToolTip(tool_tip)
+            return
+
+        self.serverStatus.setText(self._translate("Messenger", '<p style="font-size:12px">'
+                                                               '<img src="Images/server-is-on.png"> Online</p>'))
+        tool_tip = f"Server is working<br>" \
+                   f"Users online: {status['users_online']}<br>" \
+                   f"Date and time: {status['time']}<br>" \
+                   f"Registered users: {status['users_count']}<br>" \
+                   f"Written messages: {status['messages_count']}<br>"
+        self.serverStatus.setToolTip(tool_tip)
 
     def addText(self, text):
         self.textBrowser.append(text)

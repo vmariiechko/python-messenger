@@ -93,7 +93,8 @@ def status(status, args):
     return f"############ <b>Server Status</b> ############<br>" \
            f"Server date&time: {status['time']}<br>" \
            f"Registered users: {status['users_count']}<br>" \
-           f"Written messages: {status['messages_count']}<br>" + \
+           f"Written messages: {status['messages_count']}<br>" \
+           f"Users online: {status['users_online']}<br>" + \
            "#" * 34 + "<br>"
 
 

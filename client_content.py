@@ -74,6 +74,7 @@ def getMessageBoxText():
                                  "Version: 1.2"
                                  "<br><br>",
                         "contacts": "Vadym Mariiechko:<br><br>"
+                                    "vadimich348@gmail.com<br>"
                                     "LinkedIn: <a href='http<h5>s://www.linkedin.com/in/mariiechko/'>mariiechko</a><br>"
                                     "GitHub: <a href='https://github.com/marik348'>marik348</a>",
                         "serverIsOff": "The server is offline",

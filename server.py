@@ -65,12 +65,15 @@ def status(*args):
     select_messages_count = "SELECT Count(*) FROM messages"
     messages_count = executeReadQuery(connection, select_messages_count, 0)
 
+    users_online = len(online(None, None))
+
     connection.close()
     return {
         "status": True,
         "time": datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
         "users_count": users_count[0],
         "messages_count": messages_count[0],
+        "users_online": users_online,
     }
 
 
