@@ -10,12 +10,13 @@ from qtwidgets import PasswordEdit
 from client_commands import *
 from client_content import *
 from clicklabel import clickable
-from client_ui import Ui_Messenger
+from client_ui_new import Ui_Messenger
+from preferences import PreferencesWindow
 
 
 class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setupUi(self)
         self._translate = QtCore.QCoreApplication.translate
 
@@ -31,6 +32,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.actionCommands.triggered.connect(self.showCommandsBox)
         self.actionAbout.triggered.connect(self.showAboutBox)
         self.actionContacts.triggered.connect(self.showContactsBox)
+        self.actionPreferences.triggered.connect(self.openPreferencesWindow)
         self.actionLogout.triggered.connect(self.logout)
         self.actionClose.triggered.connect(self.close)
 
@@ -127,6 +129,10 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.passwordLine2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passwordLine2.setObjectName("passwordLine2")
         self.passwordLine2.setPlaceholderText(self._translate("Messenger", "Enter Your Password"))
+
+    def openPreferencesWindow(self):
+        dlg = PreferencesWindow(self)
+        dlg.exec()
 
     def clearUserData(self):
         self.username = None

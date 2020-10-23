@@ -339,6 +339,8 @@
     <property name="title">
      <string>Messenger</string>
     </property>
+    <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
     <addaction name="actionLogout"/>
     <addaction name="actionClose"/>
    </widget>
@@ -419,6 +421,11 @@
    </property>
    <property name="statusTip">
     <string/>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
    </property>
   </action>
  </widget>
