@@ -9,8 +9,8 @@ from qtwidgets import PasswordEdit
 
 from client_commands import *
 from client_content import *
-from clicklabel import clickable
-from client_ui_new import Ui_Messenger
+from click_label import clickable
+from client_ui import Ui_Messenger
 from preferences import PreferencesWindow
 
 
@@ -41,6 +41,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.username = None
         self.password = None
         self.last_message_time = 0
+        self.server_IP = '127.0.0.1:5000'
 
         self.warning_messages = getWarningMessages()
         self.message_box_text = getMessageBoxText()
@@ -79,7 +80,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         if reply == QMessageBox.Yes:
             try:
                 post(
-                    'http://127.0.0.1:5000/logout',
+                    f'http://{self.server_IP}/logout',
                     json={"username": self.username}, verify=False
                 )
             except exceptions.RequestException as e:
@@ -97,7 +98,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         if reply == QMessageBox.Yes:
             try:
                 post(
-                    'http://127.0.0.1:5000/logout',
+                    f'http://{self.server_IP}/logout',
                     json={"username": self.username}, verify=False
                 )
             except exceptions.RequestException as e:
@@ -132,7 +133,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
     def openPreferencesWindow(self):
         dlg = PreferencesWindow(self)
-        dlg.exec()
+        if dlg.exec():
+            self.server_IP = dlg.serverIP.text()
 
     def clearUserData(self):
         self.username = None
@@ -207,7 +209,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         try:
             response = post(
-                'http://127.0.0.1:5000/signup',
+                f'http://{self.server_IP}/signup',
                 auth=(self.username, self.password),
                 verify=False
             )
@@ -266,7 +268,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         try:
             response = post(
-                'http://127.0.0.1:5000/auth',
+                f'http://{self.server_IP}/auth',
                 auth=(self.username, self.password),
                 verify=False
             )
@@ -298,7 +300,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def getServerCommands(self):
         try:
             response = post(
-                'http://127.0.0.1:5000/command',
+                f'http://{self.server_IP}/command',
                 json={"username": self.username, "command": 'help'}, verify=False
             )
         except exceptions.RequestException as e:
@@ -331,7 +333,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def sendMessage(self, text):
         try:
             post(
-                'http://127.0.0.1:5000/send',
+                f'http://{self.server_IP}/send',
                 json={"username": self.username, "text": text},
                 verify=False
             )
@@ -354,8 +356,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         elif command not in [cmd['name'] for cmd in self.server_commands]:
-            self.addText(f"<b>Error:</b> Command '/{command}' not found.\n"
-                         f"Try '/help' to list all available commands :)\n")
+            self.addText(f"<b>Error:</b> Command '/{command}' not found.<br>"
+                         f"Try '/help' to list all available commands :)<br>")
             self.textEdit.clear()
             return
 
@@ -367,7 +369,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         try:
             response = post(
-                'http://127.0.0.1:5000/command',
+                f'http://{self.server_IP}/command',
                 json={"username": self.username, "command": cmd_string}, verify=False
             )
         except exceptions.RequestException as e:
@@ -394,7 +396,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         try:
             response = get(
-                'http://127.0.0.1:5000/messages',
+                f'http://{self.server_IP}/messages',
                 params={'after': self.last_message_time},
                 verify=False
             )
@@ -420,7 +422,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         try:
             response = get(
-                'http://127.0.0.1:5000/status',
+                f'http://{self.server_IP}/status',
                 verify=False
             )
             status = response.json()

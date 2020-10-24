@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'client_ui_new.ui'
+# Form implementation generated from reading ui file 'client_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.14.2
 #
@@ -187,6 +187,11 @@ class Ui_Messenger(object):
         self.loginLabel.setText(_translate("Messenger", "<html><head/><body><p><span style=\" text-decoration: underline;\">I am already a member</span></p></body></html>"))
         self.loginError2.setText(_translate("Messenger", "<html><head/><body><p><br/></p></body></html>"))
         self.passwordError2.setText(_translate("Messenger", "<html><head/><body><p><br/></p></body></html>"))
+        self.textBrowser.setHtml(_translate("Messenger", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.sendButton.setText(_translate("Messenger", "Send"))
         self.messengerLabel.setText(_translate("Messenger", "Python Messenger"))
         self.menuMessenger.setTitle(_translate("Messenger", "Messenger"))

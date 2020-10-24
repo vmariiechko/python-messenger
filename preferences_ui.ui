@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>210</height>
+    <width>332</width>
+    <height>178</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>160</y>
+     <y>140</y>
      <width>271</width>
      <height>32</height>
     </rect>
@@ -38,10 +38,10 @@
   <widget class="QLineEdit" name="serverIP">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>50</x>
      <y>80</y>
-     <width>271</width>
-     <height>41</height>
+     <width>231</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -55,11 +55,30 @@
    <property name="statusTip">
     <string>Enter IP</string>
    </property>
+   <property name="inputMask">
+    <string>999.999.999.999:9999</string>
+   </property>
    <property name="text">
-    <string>127.0.0.1:5000</string>
+    <string>1...:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
     <string>Enter Server IP</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>20</y>
+     <width>211</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic; color:#ef2929;&quot;&gt;Don't change server IP adress &lt;br/&gt;if you don't know what you're doing&lt;br/&gt;Otherwise, you can reset changes&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
