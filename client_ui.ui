@@ -277,7 +277,7 @@ p, li { white-space: pre-wrap; }
        <string>Send</string>
       </property>
      </widget>
-     <widget class="QTextEdit" name="textEdit">
+     <widget class="QPlainTextEdit" name="plainTextEdit">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -289,6 +289,7 @@ p, li { white-space: pre-wrap; }
       <property name="font">
        <font>
         <pointsize>11</pointsize>
+        <italic>false</italic>
        </font>
       </property>
      </widget>

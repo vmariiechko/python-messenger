@@ -35,11 +35,12 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.actionLogout.triggered.connect(self.logout)
         self.actionClose.triggered.connect(self.close)
 
-        self.textEdit.installEventFilter(self)
+        self.plainTextEdit.installEventFilter(self)
 
         self.username = None
         self.password = None
         self.last_message_time = 0
+        self.max_text_len = 250
         self.server_IP = '127.0.0.1:5000'
 
         self.warning_messages = getWarningMessages()
@@ -66,10 +67,22 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.getStatus()
 
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
-            if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus():
+        if event.type() == QtCore.QEvent.KeyPress and obj is self.plainTextEdit:
+            text = self.plainTextEdit.toPlainText()
+
+            if event.key() == QtCore.Qt.Key_Return and self.plainTextEdit.hasFocus():
                 self.send()
                 return True
+
+            elif len(text) > self.max_text_len:
+                text = text[:self.max_text_len]
+                self.plainTextEdit.setPlainText(text)
+
+                cursor = self.plainTextEdit.textCursor()
+                cursor.setPosition(self.max_text_len)
+                self.plainTextEdit.setTextCursor(cursor)
+                return True
+
         return super().eventFilter(obj, event)
 
     def closeEvent(self, event):
@@ -137,7 +150,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
     def clearUserData(self):
         self.username = None
-        self.textEdit.clear()
+        self.plainTextEdit.clear()
         self.textBrowser.clear()
         self.last_message_time = 0
 
@@ -310,7 +323,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         if not response.json()['ok']:
             self.addText(response.json()['output'] + "<br>")
-            self.textEdit.clear()
+            self.plainTextEdit.clear()
             return
 
         self.server_commands = response.json()['output']
@@ -319,12 +332,15 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             if cmd['name'] != 'help': self.run_server_command[f"{cmd['name']}"] = globals()[cmd['name']]
 
     def send(self):
-        text = self.textEdit.toPlainText()
+        text = self.plainTextEdit.toPlainText()
         text = text.strip()
 
         text = text.replace('</', '')
         text = text.replace('<', '')
         text = text.replace('>', '')
+
+        if len(text) > self.max_text_len:
+            text = text[:self.max_text_len]
 
         if not text:
             return
@@ -346,8 +362,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.showServerOffBox()
             return
 
-        self.textEdit.clear()
-        self.textEdit.repaint()
+        self.plainTextEdit.clear()
+        self.plainTextEdit.repaint()
 
     def sendCommand(self, cmd_string):
         command = cmd_string.split()[0]
@@ -355,19 +371,19 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         if command in [cmd['name'] for cmd in self.client_commands]:
             self.run_client_command.get(command)()
-            self.textEdit.clear()
+            self.plainTextEdit.clear()
             return
 
         elif command not in [cmd['name'] for cmd in self.server_commands]:
             self.addText(f"<b>Error:</b> Command '/{command}' not found.<br>"
                          f"Try '/help' to list all available commands :)<br>")
-            self.textEdit.clear()
+            self.plainTextEdit.clear()
             return
 
         elif command == 'help':
             output = helpClient(self.client_commands, self.server_commands, args)
             self.addText(output)
-            self.textEdit.clear()
+            self.plainTextEdit.clear()
             return
 
         try:
@@ -383,15 +399,15 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
         if not response.json()['ok']:
             self.addText("<b>Error:</b> " + response.json()['output'] + "<br>")
-            self.textEdit.clear()
+            self.plainTextEdit.clear()
             return
 
         run_command = self.run_server_command.get(command)
         output = run_command(response.json()['output'], args)
 
         self.addText(output)
-        self.textEdit.clear()
-        self.textEdit.repaint()
+        self.plainTextEdit.clear()
+        self.plainTextEdit.repaint()
 
     def getUpdates(self):
         if not self.stackedWidget.currentIndex() == 2:
