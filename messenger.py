@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QFont
 from qtwidgets import PasswordEdit
 
-
 from client_commands import *
 from client_content import *
 from click_label import clickable
@@ -310,7 +309,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         if not response.json()['ok']:
-            self.addText(response.json()['output'] + "\n")
+            self.addText(response.json()['output'] + "<br>")
             self.textEdit.clear()
             return
 
@@ -322,6 +321,10 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def send(self):
         text = self.textEdit.toPlainText()
         text = text.strip()
+
+        text = text.replace('</', '')
+        text = text.replace('<', '')
+        text = text.replace('>', '')
 
         if not text:
             return
@@ -379,7 +382,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
         if not response.json()['ok']:
-            self.addText("<b>Error:</b> " + response.json()['output'] + "\n")
+            self.addText("<b>Error:</b> " + response.json()['output'] + "<br>")
             self.textEdit.clear()
             return
 
@@ -413,7 +416,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
 
             self.addText(message['username'] + ' ' + beauty_time)
-            self.addText(message['text'] + "\n")
+            self.addText(message['text'] + "<br>")
             self.last_message_time = message['time']
 
     def getStatus(self):
