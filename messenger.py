@@ -12,6 +12,8 @@ from click_label import clickable
 from client_ui import Ui_Messenger
 from preferences import PreferencesWindow
 
+from style_sheet import load_stylesheet
+
 
 class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def __init__(self, parent=None):
@@ -60,7 +62,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.timerStatus = QtCore.QTimer()
         self.timerStatus.timeout.connect(self.getStatus)
         self.timerStatus.start(5000)
-        
+
         clickable(self.signUpLabel).connect(self.goToRegistration)
         clickable(self.loginLabel).connect(self.goToLogin)
 
@@ -186,6 +188,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
     def showCommandsBox(self):
         output = helpClient(self.client_commands, self.server_commands, [])
+        output = output.replace('=', '')
         QMessageBox.information(self, 'Commands', output)
 
     def signUpUser(self):
@@ -459,7 +462,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                    f"Users online: {status['users_online']}<br>" \
                    f"Date and time: {status['time']}<br>" \
                    f"Registered users: {status['users_count']}<br>" \
-                   f"Written messages: {status['messages_count']}<br>"
+                   f"Written messages: {status['messages_count']}"
         self.serverStatus.setToolTip(tool_tip)
 
     def addText(self, text):
@@ -469,5 +472,6 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
 
 app = QtWidgets.QApplication([])
 window = MessengerWindow()
+app.setStyleSheet(load_stylesheet())
 window.show()
 app.exec_()

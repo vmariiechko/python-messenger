@@ -78,7 +78,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic; color:#ef2929;&quot;&gt;Don't change server IP adress &lt;br/&gt;if you don't know what you're doing&lt;br/&gt;Otherwise, you can reset changes&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic; color:#ffffff;&quot;&gt;Don't change server IP adress &lt;br/&gt;if you don't know what you're doing&lt;br/&gt;Otherwise, you can reset changes&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>

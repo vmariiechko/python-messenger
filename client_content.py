@@ -1,5 +1,5 @@
 def getWarningMessages():
-    html_begin = '<span style=" font-style:italic; color:#ef2929;">'
+    html_begin = '<span style=" font-style:italic; color:#ffffff;">'
     html_end = '</span>'
 
     warning_messages = {

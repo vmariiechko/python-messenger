@@ -7,14 +7,14 @@ def helpClient(client_commands, server_commands, args):
     if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
         detailed_info = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
 
-        output = '=' * 41 + '<br>'
+        output = '=' * 40 + '<br>'
         output += detailed_info[0] + '<br>'
-        output += '=' * 41 + '<br>'
+        output += '=' * 40 + '<br>'
 
         return output
 
     elif not args:
-        output = '=' * 41 + '<br>'
+        output = '=' * 40 + '<br>'
         output += "<b>Enter '/help *command*' to print detailed<br>description of specific command</b><br><br>"
         output += "<span style=\"font-size: 14px\"><table>" \
                     "<tr>" \
@@ -35,7 +35,7 @@ def helpClient(client_commands, server_commands, args):
                       f"</tr>"
 
         output += "</table></span>"
-        output += '=' * 41 + '<br>'
+        output += '=' * 40 + '<br>'
         return output
 
     else:

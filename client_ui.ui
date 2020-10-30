@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../Downloads/messenger.png</normaloff>../../../../Downloads/messenger.png</iconset>
+    <normaloff>Images/Icon.png</normaloff>Images/Icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QStackedWidget" name="stackedWidget">
@@ -63,14 +63,12 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
+        <italic>false</italic>
        </font>
       </property>
       <property name="statusTip">
        <string>Log in to your account</string>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
       </property>
       <property name="text">
        <string>Log in</string>
@@ -119,14 +117,8 @@
       <property name="statusTip">
        <string>Go to registration form</string>
       </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel:hover#signUpLabel
-{
-   color:blue;
-}</string>
-      </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Sign up&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sign up&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -166,14 +158,11 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="statusTip">
        <string>Create new account</string>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
       </property>
       <property name="text">
        <string>Sign Up</string>
@@ -196,14 +185,8 @@
       <property name="statusTip">
        <string>Go to login form</string>
       </property>
-      <property name="styleSheet">
-       <string notr="true">QLabel:hover#loginLabel
-{
-   color:blue;
-}</string>
-      </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;I am already a member&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;I am already a member&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -242,7 +225,7 @@
        <rect>
         <x>20</x>
         <y>30</y>
-        <width>371</width>
+        <width>370</width>
         <height>401</height>
        </rect>
       </property>
@@ -262,9 +245,9 @@ p, li { white-space: pre-wrap; }
      <widget class="QPushButton" name="sendButton">
       <property name="geometry">
        <rect>
-        <x>320</x>
-        <y>460</y>
-        <width>71</width>
+        <x>340</x>
+        <y>450</y>
+        <width>50</width>
         <height>25</height>
        </rect>
       </property>
@@ -281,9 +264,9 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>450</y>
-        <width>291</width>
-        <height>41</height>
+        <y>440</y>
+        <width>370</width>
+        <height>45</height>
        </rect>
       </property>
       <property name="font">
@@ -292,7 +275,16 @@ p, li { white-space: pre-wrap; }
         <italic>false</italic>
        </font>
       </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
      </widget>
+     <zorder>textBrowser</zorder>
+     <zorder>plainTextEdit</zorder>
+     <zorder>sendButton</zorder>
     </widget>
    </widget>
    <widget class="QLabel" name="messengerLabel">
