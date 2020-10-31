@@ -91,7 +91,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         reply = QMessageBox.question(self, 'Quit', self.message_box_text["close"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.Yes and self.stackedWidget.currentIndex() == 2:
             try:
                 post(
                     f'http://{self.server_IP}/logout',
@@ -102,6 +102,10 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                 raise SystemExit
 
             event.accept()
+
+        elif reply == QMessageBox.Yes:
+            event.accept()
+
         else:
             event.ignore()
 
