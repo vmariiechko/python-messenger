@@ -170,6 +170,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
     def goToLogin(self):
         self.stackedWidget.setCurrentIndex(0)
 
+    def goToChat(self):
+        self.getServerCommands()
+        self.stackedWidget.setCurrentIndex(2)
+        self.actionLogout.setEnabled(True)
+        self.actionCommands.setEnabled(True)
+        self.plainTextEdit.setFocus()
+        self.clearCredentials()
+
     def clearCredentials(self):
         self.passwordLine1.clear()
         self.loginLine1.clear()
@@ -254,11 +262,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.loginLine2.setStyleSheet("border: 1px solid red")
             return
 
-        self.getServerCommands()
-        self.stackedWidget.setCurrentIndex(2)
-        self.actionLogout.setEnabled(True)
-        self.actionCommands.setEnabled(True)
-        self.clearCredentials()
+        self.goToChat()
 
     def loginUser(self):
         self.loginError1.setText(self._translate("Messenger", self.warning_messages['emptyStr']))
@@ -310,11 +314,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.loginLine1.setStyleSheet("border: 1px solid red")
             return
 
-        self.getServerCommands()
-        self.stackedWidget.setCurrentIndex(2)
-        self.actionLogout.setEnabled(True)
-        self.actionCommands.setEnabled(True)
-        self.clearCredentials()
+        self.goToChat()
 
     def getServerCommands(self):
         try:
@@ -339,6 +339,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             if cmd['name'] != 'help': self.run_server_command[f"{cmd['name']}"] = globals()[cmd['name']]
 
     def send(self):
+        self.plainTextEdit.setFocus()
+
         text = self.plainTextEdit.toPlainText()
         text = text.strip()
 
