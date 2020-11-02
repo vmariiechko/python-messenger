@@ -85,3 +85,10 @@ def getMessageBoxText():
     message_box_text["about"] += "Created by Vadym Mariiechko"
 
     return message_box_text
+
+
+def getMessageStyle():
+    return {'begin': "<table style='text-align: right; margin-right: 5px;'><tr><td style='text-align: right;'>",
+            'middle': "</td></tr><tr><td style='text-align: right;'>",
+            'end': "</td></tr></table><br>",
+            }

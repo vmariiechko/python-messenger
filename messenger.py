@@ -45,6 +45,7 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.max_text_len = 250
         self.server_IP = '127.0.0.1:5000'
 
+        self.message_style = getMessageStyle()
         self.warning_messages = getWarningMessages()
         self.message_box_text = getMessageBoxText()
 
@@ -438,11 +439,17 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         for message in data['messages']:
             # float -> datetime
             beauty_time = datetime.fromtimestamp(message['time'])
-            beauty_time = beauty_time.strftime('%Y/%m/%d %H:%M:%S')
+            beauty_time = beauty_time.strftime('%d/%m %H:%M:%S')
 
-            self.addText(message['username'] + ' ' + beauty_time)
-            self.addText(message['text'] + "<br>")
-            self.last_message_time = message['time']
+            if message['username'] == self.username:
+                self.addText(self.message_style['begin'] + beauty_time + ' ' + message['username']
+                             + self.message_style['middle'] + message['text'] + self.message_style['end'])
+                self.last_message_time = message['time']
+
+            else:
+                self.addText(message['username'] + ' ' + beauty_time)
+                self.addText(message['text'] + "<br>")
+                self.last_message_time = message['time']
 
     def getStatus(self):
         if self.stackedWidget.currentIndex() == 2:

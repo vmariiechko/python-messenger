@@ -88,6 +88,7 @@ class Ui_Messenger(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.textBrowser.setFont(font)
+        self.textBrowser.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser.setObjectName("textBrowser")
         self.sendButton = QtWidgets.QPushButton(self.Chat_page)
         self.sendButton.setGeometry(QtCore.QRect(340, 450, 50, 25))
