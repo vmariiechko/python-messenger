@@ -2,12 +2,12 @@ from PyQt5 import QtCore
 
 
 def load_stylesheet():
-    f = QtCore.QFile(f'style.qss')
+    style = QtCore.QFile(f'style.qss')
 
-    if not f.exists():
+    if not style.exists():
         return
     else:
-        f.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text)
-        ts = QtCore.QTextStream(f)
-        stylesheet = ts.readAll()
+        style.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text)
+        text = QtCore.QTextStream(style)
+        stylesheet = text.readAll()
         return stylesheet

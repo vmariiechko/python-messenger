@@ -6,7 +6,7 @@ from cryptography.fernet import Fernet
 
 def codec(password, flag):
     if not path.exists('../key'):
-        key = generateKey()
+        key = generate_key()
     else:
         with open('../key', 'rb') as file:
             key = file.read()
@@ -14,14 +14,14 @@ def codec(password, flag):
     cipher_suite = Fernet(key)
 
     if flag:
-        encrypted_hash = cipher_suite.encrypt(hashPassword(password))
+        encrypted_hash = cipher_suite.encrypt(hash_password(password))
         return encrypted_hash
     else:
         decrypted_hash = cipher_suite.decrypt(password)
         return decrypted_hash
 
 
-def generateKey():
+def generate_key():
     key = Fernet.generate_key()
 
     with open('../key', 'wb') as file:
@@ -30,10 +30,10 @@ def generateKey():
     return key
 
 
-def hashPassword(password):
+def hash_password(password):
     password_hash = hashpw(password.encode(), gensalt())
     return password_hash
 
 
-def checkPassword(password, hashed):
+def check_password(password, hashed):
     return checkpw(password, hashed)

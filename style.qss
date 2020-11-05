@@ -143,7 +143,7 @@ QPushButton::default
 }
 
 
-QPushButton#sendButton
+QPushButton#send_button
 {
     background-color: none;
     font-weight: bold;
@@ -151,7 +151,7 @@ QPushButton#sendButton
 }
 
 
-QPushButton:hover#sendButton
+QPushButton:hover#send_button
 {
     color: #C0C0C0;
 
@@ -175,7 +175,7 @@ QLabel::disabled
 }
 
 
-QLabel::hover#signUpLabel, QLabel::hover#loginLabel
+QLabel::hover#go_to_sign_up, QLabel::hover#go_to_login
 {
     color: #C0C0C0;
 }

@@ -1,17 +1,17 @@
-def getWarningMessages():
+def get_warning_messages():
     html_begin = '<span style=" font-style:italic; color:#ffffff;">'
     html_end = '</span>'
 
     warning_messages = {
-        "emptyStr": '',
+        "empty_str": '',
         "registered": 'Username is already registered',
-        "loginRequired": 'Login is required',
-        "invalidLogin": 'Username doesn\'t exist',
-        "loginOutOfRange": 'Username must be between 4 and 20 in length',
-        "passwordRequired": 'Password is required',
-        "invalidPassword": 'Password doesn\'t match',
-        "passwordOutOfRange": 'Password must be between 4 and 20 in length',
-        "notAlphanumeric": 'Login can only contain alphanumeric characters',
+        "login_required": 'Login is required',
+        "invalid_login": 'Username doesn\'t exist',
+        "login_out_of_range": 'Username must be between 4 and 20 in length',
+        "password_required": 'Password is required',
+        "invalid_password": 'Password doesn\'t match',
+        "password_out_of_range": 'Password must be between 4 and 20 in length',
+        "not_alphanumeric": 'Login can only contain alphanumeric characters',
         "banned": 'Account was banned',
     }
 
@@ -20,24 +20,24 @@ def getWarningMessages():
     return warning_messages
 
 
-def getClientCommands():
+def get_client_commands():
     return [
             {'name': 'close',
              'description': 'Close the messenger',
-             'detailed': '<b>Usage:</b> /close<br>'
+             'detailed': '<b>Usage:</b> /close<br><br>'
                          'Ask you to close messenger.'},
             {'name': 'logout',
              'description': 'Logout account',
-             'detailed': '<b>Usage:</b> /logout<br>'
+             'detailed': '<b>Usage:</b> /logout<br><br>'
                          'Ask you to logout account.'},
             {'name': 'reload',
              'description': 'Clear commands messages',
-             'detailed': '<b>Usage:</b> /reload<br>'
+             'detailed': '<b>Usage:</b> /reload<br><br>'
                          'Clear all commands` messages.'},
             ]
 
 
-def getMessageBoxText():
+def get_message_box_text():
     html_begin = '<span style="font-size: 15px">'
     html_end = '</span>'
 
@@ -75,9 +75,9 @@ def getMessageBoxText():
                                  "<br><br>",
                         "contacts": "Vadym Mariiechko:<br><br>"
                                     "vadimich348@gmail.com<br>"
-                                    "LinkedIn: <a href='http<h5>s://www.linkedin.com/in/mariiechko/'>mariiechko</a><br>"
+                                    "LinkedIn: <a href='https://www.linkedin.com/in/mariiechko/'>mariiechko</a><br>"
                                     "GitHub: <a href='https://github.com/marik348'>marik348</a>",
-                        "serverIsOff": "The server is offline",
+                        "server_is_off": "The server is offline",
                         "shortcuts": shortcuts_table
                         }
 
@@ -87,7 +87,7 @@ def getMessageBoxText():
     return message_box_text
 
 
-def getMessageStyle():
+def get_message_style():
     return {'begin': "<table style='text-align: right; margin-right: 5px;'><tr><td style='text-align: right;'>",
             'middle': "</td></tr><tr><td style='text-align: right;'>",
             'end': "</td></tr></table><br>",

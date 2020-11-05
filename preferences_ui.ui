@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
+  <widget class="QDialogButtonBox" name="button_box">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -35,7 +35,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="serverIP">
+  <widget class="QLineEdit" name="server_IP">
    <property name="geometry">
     <rect>
      <x>50</x>
@@ -85,7 +85,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>button_box</sender>
    <signal>accepted()</signal>
    <receiver>Preferences</receiver>
    <slot>accept()</slot>
@@ -101,7 +101,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>button_box</sender>
    <signal>rejected()</signal>
    <receiver>Preferences</receiver>
    <slot>reject()</slot>

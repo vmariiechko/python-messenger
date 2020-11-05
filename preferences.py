@@ -8,11 +8,11 @@ class PreferencesWindow(QDialog, Ui_Preferences):
         super().__init__()
         self.setupUi(self)
 
-        self.serverIP.setText(parent.server_IP)
-        self.buttonBox.button(QDialogButtonBox.Reset).clicked.connect(self.reset)
+        self.server_IP.setText(parent.server_IP)
+        self.button_box.button(QDialogButtonBox.Reset).clicked.connect(self.reset)
 
     def reset(self):
-        self.serverIP.setText("127.0.0.1:5000")
+        self.server_IP.setText("127.0.0.1:5000")
 
 
 

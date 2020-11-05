@@ -17,8 +17,8 @@
    <iconset>
     <normaloff>Images/Icon.png</normaloff>Images/Icon.png</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QStackedWidget" name="stackedWidget">
+  <widget class="QWidget" name="central_widget">
+   <widget class="QStackedWidget" name="stacked_widget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -30,8 +30,8 @@
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="Login_page">
-     <widget class="QLineEdit" name="loginLine1">
+    <widget class="QWidget" name="login_page">
+     <widget class="QLineEdit" name="login_line1">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -52,7 +52,7 @@
        <string>Login</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="loginButton">
+     <widget class="QPushButton" name="login_button">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -74,7 +74,7 @@
        <string>Log in</string>
       </property>
      </widget>
-     <widget class="QLabel" name="loginError1">
+     <widget class="QLabel" name="login_error1">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -87,7 +87,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QLabel" name="passwordError1">
+     <widget class="QLabel" name="password_error1">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -100,7 +100,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QLabel" name="signUpLabel">
+     <widget class="QLabel" name="go_to_sign_up">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -125,8 +125,8 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="Registration_page">
-     <widget class="QLineEdit" name="loginLine2">
+    <widget class="QWidget" name="registration_page">
+     <widget class="QLineEdit" name="login_line2">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -147,7 +147,7 @@
        <string>Enter Your Login</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="signUpButton">
+     <widget class="QPushButton" name="sign_up_button">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -168,7 +168,7 @@
        <string>Sign Up</string>
       </property>
      </widget>
-     <widget class="QLabel" name="loginLabel">
+     <widget class="QLabel" name="go_to_login">
       <property name="geometry">
        <rect>
         <x>120</x>
@@ -192,7 +192,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="loginError2">
+     <widget class="QLabel" name="login_error2">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -205,7 +205,7 @@
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QLabel" name="passwordError2">
+     <widget class="QLabel" name="password_error2">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -219,8 +219,8 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="Chat_page">
-     <widget class="QTextBrowser" name="textBrowser">
+    <widget class="QWidget" name="chat_page">
+     <widget class="QTextBrowser" name="text_browser">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -245,7 +245,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="sendButton">
+     <widget class="QPushButton" name="send_button">
       <property name="geometry">
        <rect>
         <x>340</x>
@@ -263,7 +263,7 @@ p, li { white-space: pre-wrap; }
        <string>Send</string>
       </property>
      </widget>
-     <widget class="QPlainTextEdit" name="plainTextEdit">
+     <widget class="QPlainTextEdit" name="plain_text_edit">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -285,12 +285,12 @@ p, li { white-space: pre-wrap; }
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
      </widget>
-     <zorder>textBrowser</zorder>
-     <zorder>plainTextEdit</zorder>
-     <zorder>sendButton</zorder>
+     <zorder>text_browser</zorder>
+     <zorder>plain_text_edit</zorder>
+     <zorder>send_button</zorder>
     </widget>
    </widget>
-   <widget class="QLabel" name="messengerLabel">
+   <widget class="QLabel" name="messenger_label">
     <property name="geometry">
      <rect>
       <x>70</x>
@@ -308,7 +308,7 @@ p, li { white-space: pre-wrap; }
      <string>Python Messenger</string>
     </property>
    </widget>
-   <widget class="QLabel" name="serverStatus">
+   <widget class="QLabel" name="server_status">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -322,8 +322,8 @@ p, li { white-space: pre-wrap; }
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QStatusBar" name="status_bar"/>
+  <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -338,29 +338,29 @@ p, li { white-space: pre-wrap; }
      <italic>false</italic>
     </font>
    </property>
-   <widget class="QMenu" name="menuMessenger">
+   <widget class="QMenu" name="menu_messenger">
     <property name="title">
      <string>Messenger</string>
     </property>
-    <addaction name="actionPreferences"/>
+    <addaction name="action_preferences"/>
     <addaction name="separator"/>
-    <addaction name="actionLogout"/>
-    <addaction name="actionClose"/>
+    <addaction name="action_logout"/>
+    <addaction name="action_close"/>
    </widget>
-   <widget class="QMenu" name="menuHelp">
+   <widget class="QMenu" name="menu_help">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionShortcuts"/>
-    <addaction name="actionCommands"/>
+    <addaction name="action_shortcuts"/>
+    <addaction name="action_commands"/>
     <addaction name="separator"/>
-    <addaction name="actionContacts"/>
-    <addaction name="actionAbout"/>
+    <addaction name="action_contacts"/>
+    <addaction name="action_about"/>
    </widget>
-   <addaction name="menuMessenger"/>
-   <addaction name="menuHelp"/>
+   <addaction name="menu_messenger"/>
+   <addaction name="menu_help"/>
   </widget>
-  <action name="actionShortcuts">
+  <action name="action_shortcuts">
    <property name="text">
     <string>Shortcuts</string>
    </property>
@@ -371,7 +371,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionCommands">
+  <action name="action_commands">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -385,7 +385,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="actionAbout">
+  <action name="action_about">
    <property name="text">
     <string>About</string>
    </property>
@@ -393,7 +393,7 @@ p, li { white-space: pre-wrap; }
     <string>Show messenger information</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="action_close">
    <property name="text">
     <string>Exit</string>
    </property>
@@ -404,7 +404,7 @@ p, li { white-space: pre-wrap; }
     <string>Alt+E</string>
    </property>
   </action>
-  <action name="actionLogout">
+  <action name="action_logout">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -418,7 +418,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+G</string>
    </property>
   </action>
-  <action name="actionContacts">
+  <action name="action_contacts">
    <property name="text">
     <string>Contacts</string>
    </property>
@@ -426,7 +426,7 @@ p, li { white-space: pre-wrap; }
     <string/>
    </property>
   </action>
-  <action name="actionPreferences">
+  <action name="action_preferences">
    <property name="text">
     <string>Preferences</string>
    </property>

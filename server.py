@@ -30,23 +30,23 @@ queries = {
                                 );"""
 }
 
-run_command = {'help': helpClient,
-               'myself': myself,
-               'online': online,
-               'reg': reg,
-               'ban': ban,
-               'unban': unban,
-               'role': role}
+available_commands = {'help': help_client,
+                      'myself': myself,
+                      'online': online,
+                      'reg': registered,
+                      'ban': ban,
+                      'unban': unban,
+                      'role': role}
 
-connection = createConnection("data.sqlite3")
-executeQuery(connection, queries['create_users_table'])
-executeQuery(connection, queries['create_messages_table'])
+connection = create_connection("data.sqlite3")
+execute_query(connection, queries['create_users_table'])
+execute_query(connection, queries['create_messages_table'])
 connection.close()
 
 
 @app.route("/")
 def hello():
-    return "<h1>My First Python Messenger</h1>"
+    return "<h1>My First Python Program</h1>"
 
 
 @app.route("/status")
@@ -57,13 +57,13 @@ def status(*args):
     request: -
     response: -
     """
-    connection = createConnection("data.sqlite3")
+    connection = create_connection("data.sqlite3")
 
     select_users_count = "SELECT Count(*) FROM users"
-    users_count = executeReadQuery(connection, select_users_count, 0)
+    users_count = execute_read_query(connection, select_users_count, 0)
 
     select_messages_count = "SELECT Count(*) FROM messages"
-    messages_count = executeReadQuery(connection, select_messages_count, 0)
+    messages_count = execute_read_query(connection, select_messages_count, 0)
 
     users_online = len(online(None, None))
 
@@ -77,29 +77,29 @@ def status(*args):
     }
 
 
-@app.route("/messages")
-def messagesHistory():
+@app.route("/get_messages")
+def get_messages():
     """
-    Receive messages after point "after"
+    Receive messages after point of time
 
     request: ?after=1234567890.4
     response: {
         "messages": [
-            {"username": "str", "text": "str", "time": float},
+            {"username": str, "text": str, "time": float},
             ...
         ]
     }
     """
-    after = float(request.args['after'])
+    after_time = float(request.args['after'])
     new_messages = []
 
-    connection = createConnection("data.sqlite3")
+    connection = create_connection("data.sqlite3")
 
     select_messages = f"SELECT m.text, m.time, u.username FROM messages m " \
                       f"INNER JOIN users u " \
                       f"ON m.user_id = u.id " \
                       f"WHERE m.time > :after"
-    query_data = executeReadQuery(connection, select_messages, 1, {'after': after})
+    query_data = execute_read_query(connection, select_messages, 1, {'after': after_time})
 
     for item in query_data:
         message = {'username': item[2], 'text': item[0], 'time': item[1]}
@@ -109,10 +109,10 @@ def messagesHistory():
     return {"messages": new_messages}
 
 
-@app.route("/send", methods=['POST'])
-def send():
+@app.route("/send_message", methods=['POST'])
+def send_message():
     """
-    Send message
+    Send message on server
 
     request: {
         "username": str,
@@ -124,22 +124,22 @@ def send():
     username = data["username"]
     text = data["text"]
 
-    connection = createConnection("data.sqlite3")
+    connection = create_connection("data.sqlite3")
 
     select_user_id = f"SELECT id FROM users WHERE username LIKE :username"
-    query_data = executeReadQuery(connection, select_user_id, 0, {'username': username})
+    query_data = execute_read_query(connection, select_user_id, 0, {'username': username})
 
     data_dict = {'text': text, 'id': query_data[0]}
     new_message = f"INSERT INTO messages (text, time, user_id) " \
                   f"VALUES (:text, strftime('%s','now'), :id)"
-    executeQuery(connection, new_message, data_dict)
+    execute_query(connection, new_message, data_dict)
 
     connection.close()
     return {'ok': True}
 
 
 @app.route("/auth", methods=['POST'])
-def authUser():
+def auth_user():
     """
     Authentificate User
 
@@ -155,10 +155,10 @@ def authUser():
     username = request.authorization.username
     password = request.authorization.password
 
-    connection = createConnection("data.sqlite3")
+    connection = create_connection("data.sqlite3")
 
     select_user = f"SELECT password_hash, is_banned  FROM users WHERE username LIKE :username"
-    query_data = executeReadQuery(connection, select_user, 0, {'username': username})
+    query_data = execute_read_query(connection, select_user, 0, {'username': username})
 
     if query_data is None:
         connection.close()
@@ -166,24 +166,25 @@ def authUser():
 
     password_hash = codec(query_data[0], 0)
 
-    if not checkPassword(password.encode(), password_hash):
+    if not check_password(password.encode(), password_hash):
         connection.close()
         return {'exist': True, 'match': False}
 
     elif query_data[1] == 1:
+        connection.close()
         return {'exist': True, 'match': True, 'banned': True}
 
-    is_online = f"UPDATE users " \
-                f"SET is_active = 1 " \
-                f"WHERE username LIKE :username"
-    executeQuery(connection, is_online, {'username': username})
+    set_online = f"UPDATE users " \
+                 f"SET is_active = 1 " \
+                 f"WHERE username LIKE :username"
+    execute_query(connection, set_online, {'username': username})
 
     connection.close()
     return {'exist': True, 'match': True, 'banned': False}
 
 
-@app.route("/signup", methods=['POST'])
-def signupUser():
+@app.route("/sign_up", methods=['POST'])
+def sign_up_user():
     """
     Register User
 
@@ -192,8 +193,8 @@ def signupUser():
         "password": str
     }
     response: {
-        "loginOutOfRange": bool,
-        "passwordOutOfRange": bool,
+        "login_out_of_range": bool,
+        "password_out_of_range": bool,
         "ok": bool
     }
     """
@@ -201,14 +202,14 @@ def signupUser():
     password = request.authorization.password
 
     if len(username) not in range(4, 20, 1):
-        return {"loginOutOfRange": True}
+        return {"login_out_of_range": True}
     elif len(password) not in range(4, 20, 1):
-        return {"loginOutOfRange": False, "passwordOutOfRange": True}
+        return {"login_out_of_range": False, "password_out_of_range": True}
 
-    connection = createConnection("data.sqlite3")
+    connection = create_connection("data.sqlite3")
 
     select_user = f"SELECT id FROM users WHERE username LIKE :username"
-    query_data = executeReadQuery(connection, select_user, 0, {'username': username})
+    query_data = execute_read_query(connection, select_user, 0, {'username': username})
 
     if query_data is None:
         password_hash = codec(password, 1)
@@ -217,18 +218,18 @@ def signupUser():
         data_dict = {'username': username, 'password_hash': password_hash}
         create_user = f"INSERT INTO users (username, password_hash, registered)" \
                       f"VALUES (:username, :password_hash, strftime('%s','now'))"
-        executeQuery(connection, create_user, data_dict)
+        execute_query(connection, create_user, data_dict)
 
     else:
         connection.close()
-        return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': False}
+        return {"login_out_of_range": False, "password_out_of_range": False, 'ok': False}
 
     connection.close()
-    return {"loginOutOfRange": False, "passwordOutOfRange": False, 'ok': True}
+    return {"login_out_of_range": False, "password_out_of_range": False, 'ok': True}
 
 
 @app.route("/command", methods=['POST'])
-def runCommand():
+def execute_command():
     """
     Execute command
 
@@ -246,26 +247,26 @@ def runCommand():
 
     cmd_with_args = cmd_with_args.split()
 
-    command = cmd_with_args[0]
+    command_name = cmd_with_args[0]
     args = cmd_with_args[1:] if len(cmd_with_args) > 1 else None
 
-    if command in [cmd['name'] for cmd in user_server_commands]:
-        func = run_command.get(command)
+    if command_name in [cmd['name'] for cmd in user_server_commands]:
+        command_func = available_commands.get(command_name)
 
         if args:
-            output = func(username, args)
+            output = command_func(username, args)
         else:
-            output = func(username)
+            output = command_func(username)
 
         return {'ok': True, 'output': output}
 
-    elif command in [cmd['name'] for cmd in moderator_server_commands + admin_server_commands]:
+    elif command_name in [cmd['name'] for cmd in moderator_server_commands + admin_server_commands]:
         if not args:
             return {'ok': False, 'output': 'Argument must be specified'}
 
-        func = run_command.get(command)
+        command_func = available_commands.get(command_name)
 
-        output = func(username, args)
+        output = command_func(username, args)
 
         return {'ok': output['ok'], 'output': output['result']}
 
@@ -274,7 +275,7 @@ def runCommand():
 
 
 @app.route("/logout", methods=['POST'])
-def logoutUser():
+def logout_user():
     """
     Mark that user loged out
 
@@ -288,17 +289,17 @@ def logoutUser():
     username = request.json["username"]
 
     if username:
-        connection = createConnection("data.sqlite3")
+        connection = create_connection("data.sqlite3")
 
         logout_user = f"UPDATE users " \
                       f"SET is_active = 0, last_active = strftime('%s','now')" \
                       f"WHERE username LIKE :username"
-        executeQuery(connection, logout_user, {'username': username})
+        execute_query(connection, logout_user, {'username': username})
 
         connection.close()
 
     return {"ok": True}
 
 
-run_command['status'] = status
+available_commands['status'] = status
 app.run()

@@ -1,14 +1,14 @@
 from datetime import datetime
 
 
-def helpClient(client_commands, server_commands, args):
+def help_client(client_commands, server_commands, args):
     all_commands = client_commands + server_commands
 
     if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
-        detailed_info = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
+        command_desc = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
 
         output = '=' * 40 + '<br>'
-        output += detailed_info[0] + '<br>'
+        output += command_desc[0] + '<br>'
         output += '=' * 40 + '<br>'
 
         return output
@@ -17,21 +17,21 @@ def helpClient(client_commands, server_commands, args):
         output = '=' * 40 + '<br>'
         output += "<b>Enter '/help *command*' to print detailed<br>description of specific command</b><br><br>"
         output += "<span style=\"font-size: 14px\"><table>" \
-                    "<tr>" \
-                        "<th>Commands&nbsp;&nbsp;</th>" \
-                        "<th>Description</th>" \
-                    "</tr>"
+                  "<tr>" \
+                  "<th>Commands&nbsp;&nbsp;</th>" \
+                  "<th>Description</th>" \
+                  "</tr>"
 
         for cmd in client_commands:
             output += f"<tr>" \
-                        f"<td><code>{cmd['name']}</code></td>" \
-                        f"<td>{cmd['description']}</td>" \
+                      f"<td><code>{cmd['name']}</code></td>" \
+                      f"<td>{cmd['description']}</td>" \
                       f"</tr>"
 
         for cmd in server_commands:
             output += f"<tr>" \
-                        f"<td><code>{cmd['name']}</code></td>" \
-                        f"<td>{cmd['description']}</td>" \
+                      f"<td><code>{cmd['name']}</code></td>" \
+                      f"<td>{cmd['description']}</td>" \
                       f"</tr>"
 
         output += "</table></span>"

@@ -1,7 +1,7 @@
 from sqlite3 import Error, connect
 
 
-def createConnection(path):
+def create_connection(path):
     connection = None
 
     try:
@@ -12,7 +12,7 @@ def createConnection(path):
     return connection
 
 
-def executeQuery(connection, query, data=None):
+def execute_query(connection, query, data=None):
     cursor = connection.cursor()
 
     try:
@@ -28,7 +28,7 @@ def executeQuery(connection, query, data=None):
         print(f"The error '{e}' occurred")
 
 
-def executeReadQuery(connection, query, flag=1, data=None):
+def execute_read_query(connection, query, flag=1, data=None):
     cursor = connection.cursor()
     result = None
 
