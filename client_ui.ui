@@ -45,9 +45,6 @@
         <pointsize>14</pointsize>
        </font>
       </property>
-      <property name="text">
-       <string/>
-      </property>
       <property name="placeholderText">
        <string>Login</string>
       </property>
@@ -83,9 +80,6 @@
         <height>21</height>
        </rect>
       </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
      </widget>
      <widget class="QLabel" name="password_error1">
       <property name="geometry">
@@ -95,9 +89,6 @@
         <width>181</width>
         <height>21</height>
        </rect>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QLabel" name="go_to_sign_up">
@@ -118,7 +109,7 @@
        <string>Go to registration form</string>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sign up&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>Sign up</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -139,9 +130,6 @@
        <font>
         <pointsize>14</pointsize>
        </font>
-      </property>
-      <property name="text">
-       <string/>
       </property>
       <property name="placeholderText">
        <string>Enter Your Login</string>
@@ -186,7 +174,7 @@
        <string>Go to login form</string>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;I am already a member&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>I am already a member</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -201,9 +189,6 @@
         <height>21</height>
        </rect>
       </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
      </widget>
      <widget class="QLabel" name="password_error2">
       <property name="geometry">
@@ -213,9 +198,6 @@
         <width>181</width>
         <height>21</height>
        </rect>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </widget>
@@ -316,9 +298,6 @@ p, li { white-space: pre-wrap; }
       <width>61</width>
       <height>16</height>
      </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
   </widget>
