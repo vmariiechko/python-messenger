@@ -72,7 +72,9 @@ def check_permissions(username):
 def help_client(username):
     role = check_permissions(username)
 
-    if role[0] == 1:
+    if not role:
+        return None
+    elif role[0] == 1:
         return user_server_commands
     elif role[0] == 2:
         return user_server_commands + moderator_server_commands
@@ -119,6 +121,12 @@ def registered(*args):
 
 
 def ban(username, args, flag=1):
+    role = check_permissions(username)
+    if not role:
+        return {'ok': False, 'result': "User doesn't exist"}
+    elif role[0] not in (2, 3):
+        return {'ok': False, 'result': "You don't have permissions"}
+
     all_usernames = registered()
     all_usernames = sum(all_usernames, ())
 
@@ -151,14 +159,18 @@ def unban(username, args):
 
 
 def role(username, args):
+    role = check_permissions(username)
+    if not role:
+        return {'ok': False, 'result': "User doesn't exist"}
+    elif role[0] not in (2, 3):
+        return {'ok': False, 'result': "You don't have permissions"}
+
     permission = args[-1]
 
     if permission not in ('1', '2', '3'):
         return {'ok': False, 'result': "Role isn't specified"}
     elif len(args) != 2:
         return {'ok': False, 'result': "Enter username"}
-    elif username is None:
-        return {'ok': False, 'result': "Can't detect your username"}
 
     all_usernames = registered()
     user = args[0]
