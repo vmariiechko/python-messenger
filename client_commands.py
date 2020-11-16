@@ -1,11 +1,23 @@
 from datetime import datetime
 
 
-def help_client(client_commands, server_commands, args):
+def help_client(client_commands, server_commands, arg):
+    """
+    Generates help content.
+
+    If no arg specified, generates main help content,
+    otherwise generates help content for specified command.
+
+    :param client_commands: list of dicts with available client-side commands
+    :param server_commands: list of dicts with available server-side commands
+    :param arg: specified command, optional
+    :return: HTML help text
+    """
+
     all_commands = client_commands + server_commands
 
-    if len(args) == 1 and args[0] in [cmd['name'] for cmd in all_commands]:
-        command_desc = [cmd['detailed'] for cmd in all_commands if args[0] == cmd['name']]
+    if len(arg) == 1 and arg[0] in [cmd['name'] for cmd in all_commands]:
+        command_desc = [cmd['detailed'] for cmd in all_commands if arg[0] == cmd['name']]
 
         output = '=' * 40 + '<br>'
         output += command_desc[0] + '<br>'
@@ -13,7 +25,7 @@ def help_client(client_commands, server_commands, args):
 
         return output
 
-    elif not args:
+    elif not arg:
         output = '=' * 40 + '<br>'
         output += "<b>Enter '/help *command*' to print detailed<br>description of specific command</b><br><br>"
         output += "<span style=\"font-size: 14px\"><table>" \
@@ -43,6 +55,17 @@ def help_client(client_commands, server_commands, args):
 
 
 def online(users, args):
+    """
+    Generates content about online users.
+
+    If no args specified, generates content about all online users,
+    otherwise generates content about specified users.
+
+    :param users: list of lists with data about existing users
+    :param args: list of all defined usernames, optional
+    :return: HTML content about online users
+    """
+
     reg_usernames = [user[0] for user in users]
     users_info = ''
     output = ''
@@ -90,6 +113,14 @@ def online(users, args):
 
 
 def status(status, args):
+    """
+    Generates server status content.
+
+    :param status: dict of server data
+    :param args: not used, optional
+    :return:  HTML server content
+    """
+
     return f"############ <b>Server Status</b> ############<br>" \
            f"Server date&time: {status['time']}<br>" \
            f"Registered users: {status['users_count']}<br>" \
@@ -99,6 +130,14 @@ def status(status, args):
 
 
 def myself(myself, args):
+    """
+    Generates information about user.
+
+    :param myself: dict of data about user
+    :param args: not used, optional
+    :return: HTML user information
+    """
+
     myself[2] = datetime.fromtimestamp(myself[2]).strftime('%Y/%m/%d %H:%M:%S')
     myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
 
@@ -118,18 +157,50 @@ def myself(myself, args):
 
 
 def reg(all_usernames, args):
+    """
+    Generates content about registered users.
+
+    :param all_usernames: list of one-element lists with all registered usernames
+    :param args: not used, optional
+    :return: HTML content about registered users
+    """
+
     all_usernames = sum(all_usernames, [])
     all_usernames = ', '.join([user for user in all_usernames])
     return f"<b>Registered users:</b> {all_usernames}<br>"
 
 
 def role(updated, args):
+    """
+    Generates success message about role changing.
+
+    :param updated: message string about updated permissions
+    :param args: username string whom permissions was changed
+    :return: HTML message
+    """
+
     return "<b>Success:</b> " + args[0] + updated
 
 
 def ban(banned, args):
+    """
+    Generates success message about user blocking.
+
+    :param banned: message string about locking
+    :param args: not used, optional
+    :return: HTML message
+    """
+
     return "<b>Success:</b> " + banned
 
 
 def unban(unbanned, args):
+    """
+    Generates success message about user unblocking.
+
+    :param unbanned: message string about unlocking
+    :param args: not used, optional
+    :return: HTML message
+    """
+
     return "<b>Success:</b> " + unbanned

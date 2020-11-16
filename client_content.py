@@ -1,4 +1,6 @@
 def get_warning_messages():
+    """Generates warning messages in HTML."""
+
     html_begin = '<span style=" font-style:italic; color:#ffffff;">'
     html_end = '</span>'
 
@@ -21,6 +23,8 @@ def get_warning_messages():
 
 
 def get_client_commands():
+    """Generates client-side commands."""
+
     return [
             {'name': 'close',
              'description': 'Close the messenger',
@@ -38,6 +42,8 @@ def get_client_commands():
 
 
 def get_message_box_text():
+    """Generates text for message boxes in HTML."""
+
     html_begin = '<span style="font-size: 15px">'
     html_end = '</span>'
 
@@ -88,6 +94,8 @@ def get_message_box_text():
 
 
 def get_message_style():
+    """Generates style for messages in HTML."""
+
     return {'begin': "<table style='text-align: right; margin-right: 5px;'><tr><td style='text-align: right;'>",
             'middle': "</td></tr><tr><td style='text-align: right;'>",
             'end': "</td></tr></table><br>",

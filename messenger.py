@@ -10,12 +10,44 @@ from client_commands import *
 from client_content import *
 from click_label import clickable
 from client_ui import Ui_Messenger
-from preferences import PreferencesWindow
+from preferences import Preferences
 from style_sheet import load_stylesheet
 
 
-class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
+class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
+    """
+    The messenger object acts as the main object and is managed by client.
+
+    Shows UI and is responsible for UX.
+    Every 5 seconds requests server status.
+    Every second shows new messages, if user logged in.
+    Under main label "Python Messenger" there is server status, which displays whether server is working,
+    if yes, you can hover on it to see full server status.
+    In case of disconnection from server it'll show server-off message and navigate to login form.
+    It's possible to change server IP address in preferences menu.
+
+    :param translate: properly shows all content
+    :param password_line1: input line with icons to show/hide password entries on login form
+    :param password_line2: input line with icons to show/hide password entries on registration form
+    :param username: user nickname string
+    :param password: user password string
+    :param last_message_time: last time of getting messages, defaults to 0
+    :param max_text_len: maximum text message length to send in chat, defaults to 250
+    :param server_IP: server IPv4 string
+    :param message_style: style for messages defined in :func:`get_message_style`
+    :param warning_messages: dict of warning messages defined in :func:`get_warning_messages`
+    :param message_box_text: dict of content for message box defined in :func:`get_message_box_text`
+    :param client_commands: list of dicts with client-side commands defined in :func:`get_client_commands`
+    :param run_client_command: dict, where key is the name of client command and value is the function of this command
+    :param server_commands: list of dicts with server-side commands defined in :func:`get_server_commands`
+    :param run_server_command: dict, where key is the name of server command and value is the function of this command
+    :param timer_get_messages: timer, which every second runs :func:`get_messages`
+    :param timer_get_status: timer, which every 5 seconds runs :func:`get_status`
+    """
+
     def __init__(self, parent=None):
+        """Initialize messenger object."""
+
         super().__init__(parent)
         self.setupUi(self)
         self.translate = QtCore.QCoreApplication.translate
@@ -69,6 +101,13 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.get_status()
 
     def eventFilter(self, obj, event):
+        """
+        Filters Enter key press and message text length.
+
+        If Enter key pressed, sends user's message.
+        If length of message is above maximum, doesn't allow writing.
+        """
+
         if event.type() == QtCore.QEvent.KeyPress and obj is self.plain_text_edit:
             text = self.plain_text_edit.toPlainText()
 
@@ -88,6 +127,16 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         return super().eventFilter(obj, event)
 
     def closeEvent(self, event):
+        """
+        Shows question message box for acception or ignoring to close the messenger.
+
+        Asks user does he really wants to close the messenger, if yes,
+        than marks logout of user and closes the messenger.
+        Otherwise, ignores closing messenger event.
+
+        :param event: event to close the messenger
+        """
+
         reply = QMessageBox.question(self, 'Quit', self.message_box_text["close"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
@@ -109,6 +158,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             event.ignore()
 
     def logout(self):
+        """
+        Shows question message box for acception or ignoring to log out from account.
+
+        Asks user does he really wants to log out, if yes,
+        than marks logout and navigates to login form.
+        Otherwise, ignores logout event.
+        """
+
         reply = QMessageBox.question(self, 'Logout', self.message_box_text["logout"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
@@ -131,6 +188,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             return
 
     def modify_password_lines(self):
+        """Modifies and appears password lines."""
+
         geometry = QtCore.QRect(60, 200, 291, 41)
         font = QFont()
         font.setPointSize(14)
@@ -148,27 +207,39 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.password_line2.setPlaceholderText(self.translate("Messenger", "Enter Your Password"))
 
     def open_preferences_window(self):
-        dlg = PreferencesWindow(self)
-        if dlg.exec():
-            self.server_IP = dlg.server_IP.text()
+        """Opens settings window."""
+
+        settings = Preferences(self)
+        if settings.exec():
+            self.server_IP = settings.server_IP.text()
 
     def clear_user_data(self):
+        """Clears user data after logout."""
+
         self.username = None
         self.plain_text_edit.clear()
         self.text_browser.clear()
         self.last_message_time = 0
 
     def reload(self):
+        """Reloads all messages and deletes commands output."""
+
         self.text_browser.clear()
         self.last_message_time = 0
 
     def go_to_registration_form(self):
+        """Navigates to registration menu."""
+
         self.stacked_widget.setCurrentIndex(1)
 
     def go_to_login_form(self):
+        """Navigates to login menu."""
+
         self.stacked_widget.setCurrentIndex(0)
 
     def go_to_chat(self):
+        """Navigates to chat."""
+
         self.get_server_commands()
         self.stacked_widget.setCurrentIndex(2)
         self.action_logout.setEnabled(True)
@@ -177,6 +248,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.clear_credentials()
 
     def clear_credentials(self):
+        """Clears login and password lines after log in or sign up."""
+
         self.password_line1.clear()
         self.login_line1.clear()
         self.password_line2.clear()
@@ -184,24 +257,41 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.password = None
 
     def show_about_box(self):
+        """Shows message box with content about messenger."""
+
         QMessageBox.information(self, 'About', self.message_box_text["about"])
 
     def show_contacts_box(self):
+        """Shows message box with contacts information."""
+
         QMessageBox.information(self, 'Contacts', self.message_box_text["contacts"])
 
     def show_server_off_box(self):
+        """Shows message box about server off information."""
+
         QMessageBox.critical(self, 'Opsss...', self.message_box_text["server_is_off"])
         self.go_to_login_form()
 
     def show_shortcuts_box(self):
+        """Shows message box with shortcuts."""
+
         QMessageBox.information(self, 'Shortcuts', self.message_box_text["shortcuts"])
 
     def show_commands_box(self):
+        """Shows message box with available commands."""
+
         output = help_client(self.client_commands, self.server_commands, [])
         output = output.replace('=', '')
         QMessageBox.information(self, 'Commands', output)
 
     def sign_up_user(self):
+        """
+        Registers user.
+
+        Verifies correctness of login and password input.
+        Sends request to sign up user.
+        """
+
         self.login_error2.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.password_error2.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.login_line2.setStyleSheet("border: 1px solid #B8B5B2")
@@ -262,6 +352,13 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.go_to_chat()
 
     def login_user(self):
+        """
+        Allows user to log in.
+
+        Verifies correctness of login and password input.
+        Sends request to authenticate user.
+        """
+
         self.login_error1.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.password_error1.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.login_line1.setStyleSheet("border: 1px solid #B8B5B2")
@@ -313,6 +410,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.go_to_chat()
 
     def get_server_commands(self):
+        """Sends request to get available server-side commands for user."""
+
         try:
             response = post(
                 f'http://{self.server_IP}/command',
@@ -334,6 +433,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             if cmd['name'] != 'help': self.run_server_command[f"{cmd['name']}"] = globals()[cmd['name']]
 
     def send(self):
+        """Separates and directs messages & commands to relevant function."""
+
         self.plain_text_edit.setFocus()
 
         text = self.plain_text_edit.toPlainText()
@@ -354,6 +455,12 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             self.send_message(text)
 
     def send_message(self, text):
+        """
+        Stores message on the server.
+
+        :param text: text of message
+        """
+
         try:
             post(
                 f'http://{self.server_IP}/send_message',
@@ -369,6 +476,16 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.plain_text_edit.repaint()
 
     def send_command(self, cmd_string):
+        """
+        Executes command.
+
+        If it's client-side command, executes directly from client.
+        If it's server-side command, sends command to execute
+        on the server and processes the output.
+
+        :param cmd_string: command with parameters to execute
+        """
+
         command = cmd_string.split()[0]
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
@@ -412,6 +529,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.plain_text_edit.repaint()
 
     def get_messages(self):
+        """Sends request to get new messages and appears them in style."""
+
         if not self.stacked_widget.currentIndex() == 2:
             return
 
@@ -443,6 +562,8 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
                 self.last_message_time = message['time']
 
     def get_status(self):
+        """Sends request to get server status."""
+
         if self.stacked_widget.currentIndex() == 2:
             return
 
@@ -454,14 +575,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
             status = response.json()
         except exceptions.RequestException as e:
             self.server_status.setText(self.translate("Messenger", '<p style="font-size:12px">'
-                                                                    '<img src="Images/server-is-off.png"> Offline</p>'))
+                                                                    '<img src="images/server-is-off.png"> Offline</p>'))
             tool_tip = f"Server isn't working<br>" \
                        f"For more information please contact with developer using 'Contacts' tab in 'Help' menu above"
             self.server_status.setToolTip(tool_tip)
             return
 
         self.server_status.setText(self.translate("Messenger", '<p style="font-size:12px">'
-                                                                '<img src="Images/server-is-on.png"> Online</p>'))
+                                                                '<img src="images/server-is-on.png"> Online</p>'))
         tool_tip = f"Server is working<br>" \
                    f"Users online: {status['users_online']}<br>" \
                    f"Date and time: {status['time']}<br>" \
@@ -470,12 +591,14 @@ class MessengerWindow(QtWidgets.QMainWindow, Ui_Messenger):
         self.server_status.setToolTip(tool_tip)
 
     def show_text(self, text):
+        """Shows given text in messenger chat."""
+
         self.text_browser.append(text)
         self.text_browser.repaint()
 
 
 app = QtWidgets.QApplication([])
-window = MessengerWindow()
+window = Messenger()
 app.setStyleSheet(load_stylesheet())
 window.show()
 app.exec_()

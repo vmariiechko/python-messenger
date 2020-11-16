@@ -4,7 +4,8 @@ from database import *
 
 
 def messages_overflow():
-    """ Keeps last 300 messages """
+    """Keeps last 300 messages in database every 10 minutes."""
+
     connection = create_connection("data.sqlite3")
     delete_old = "DELETE from messages WHERE id not in " \
                  "(SELECT id FROM messages ORDER BY time DESC LIMIT 300)"

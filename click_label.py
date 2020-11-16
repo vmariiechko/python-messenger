@@ -2,6 +2,13 @@ from PyQt5.QtCore import *
 
 
 def clickable(widget):
+    """
+    Makes widget to be clickable.
+
+    :param widget: QLabel to receive clicks
+    :return: clickable widget
+    """
+
     class Filter(QObject):
         clicked = pyqtSignal()
 

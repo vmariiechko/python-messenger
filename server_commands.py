@@ -58,6 +58,16 @@ admin_server_commands = [
 
 
 def check_permissions(username):
+    """
+    Checks on user's permissions.
+
+    There're 3 numbers for the permissions: 1, 2 and 3.
+    Where: 1 - User, 2 - Moderator, 3 - Administrator.
+
+    :param username: who executed the command
+    :return: one-element tuple with number for the permissions
+    """
+
     connection = create_connection("data.sqlite3")
 
     select_permission = f"SELECT role " \
@@ -70,6 +80,13 @@ def check_permissions(username):
 
 
 def help_client(username):
+    """
+    Defines available commands depending on the permissions.
+
+    :param username: who executed the command
+    :return: list of dicts with available commands due to the permissions
+    """
+
     role = check_permissions(username)
 
     if not role:
@@ -83,6 +100,19 @@ def help_client(username):
 
 
 def myself(username, *args):
+    """
+    Queries user's data.
+
+    Executes read query to get user's data:
+        - id
+        - permissions
+        - date of registration in seconds
+        - date of last activity in seconds
+
+    :param username: who executed the command
+    :return: tuple of user's data
+    """
+
     connection = create_connection("data.sqlite3")
 
     select_user = f"SELECT id, role, registered, last_active " \
@@ -95,6 +125,21 @@ def myself(username, *args):
 
 
 def online(username, args=None):
+    """
+    Checks if there're online users.
+
+    With no args parameter searches for all online users.
+    With specified args parameter searches only for specified ones.
+    User's data tuple contains:
+        - username
+        - is active (1 - Yes, 0 - No)
+        - date of last activity in seconds
+
+    :param username: who executed the command
+    :param args: list of usernames, optional
+    :return: list of tuples with users' data about their activity
+    """
+
     connection = create_connection("data.sqlite3")
 
     if args:
@@ -111,6 +156,13 @@ def online(username, args=None):
 
 
 def registered(*args):
+    """
+    Queries all registered users.
+
+    :param args: not used, optional
+    :return: list of one-element tuples with registered usernames
+    """
+
     connection = create_connection("data.sqlite3")
 
     all_usernames = select_queries['select_all_usernames']
@@ -121,6 +173,22 @@ def registered(*args):
 
 
 def ban(username, args, flag=1):
+    """
+    Blocks user to log in.
+
+    Depending on the flag parameter, this function can block or unblock user.
+    Only moderators and administrators can execute this command
+
+    :param username: who executed the command
+    :param args: list with usernames to block
+    :param flag: switch, 1 - ban user, 0 - unban user
+    :return: dict of execution status
+    :rtype: {
+        'ok': bool
+        'result': str
+    }
+    """
+
     role = check_permissions(username)
     if not role:
         return {'ok': False, 'result': "User doesn't exist"}
@@ -155,10 +223,29 @@ def ban(username, args, flag=1):
 
 
 def unban(username, args):
+    """Allow (unblock) user to log in. Same as :func:`ban`."""
+
     return ban(username, args, 0)
 
 
 def role(username, args):
+    """
+    Changes role for specified user.
+
+    Command takes only 2 arguments:
+        - username
+        - number of role (1 - User, 2 - Moderator, 3 - Administrator)
+    Only administrators can execute this command
+
+    :param username: who executed the command
+    :param args: list of two strings: username and number of role
+    :return: dict of execution status
+    :rtype: {
+        'ok': bool
+        'result': str
+    }
+    """
+
     role = check_permissions(username)
     if not role:
         return {'ok': False, 'result': "User doesn't exist"}

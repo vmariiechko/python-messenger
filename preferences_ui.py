@@ -45,7 +45,7 @@ class Ui_Preferences(object):
         self.server_IP.setInputMask(_translate("Preferences", "999.999.999.999:9999"))
         self.server_IP.setText(_translate("Preferences", "1...:"))
         self.server_IP.setPlaceholderText(_translate("Preferences", "Enter Server IP"))
-        self.label.setText(_translate("Preferences", "<html><head/><body><p><span style=\" font-style:italic; color:#ffffff;\">Don\'t change server IP adress <br/>if you don\'t know what you\'re doing<br/>Otherwise, you can reset changes</span></p><p><br/></p></body></html>"))
+        self.label.setText(_translate("Preferences", "<html><head/><body><p><span style=\" font-style:italic; color:#ffffff;\">Don\'t change server IP adress, <br/>if you don\'t know what you\'re doing<br/>Otherwise, you can reset changes</span></p><p><br/></p></body></html>"))
 
 
 if __name__ == "__main__":

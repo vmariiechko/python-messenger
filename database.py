@@ -2,6 +2,13 @@ from sqlite3 import Error, connect
 
 
 def create_connection(path):
+    """
+    Generates connection to database under specified path.
+
+    :param path: path to database
+    :return: connection to database
+    """
+
     connection = None
 
     try:
@@ -13,6 +20,14 @@ def create_connection(path):
 
 
 def execute_query(connection, query, data=None):
+    """
+    Performs given query in specified database.
+
+    :param connection: connection to database
+    :param query: string of query to execute
+    :param data: dict of additional data to paste in query
+    """
+
     cursor = connection.cursor()
 
     try:
@@ -31,6 +46,17 @@ def execute_query(connection, query, data=None):
 
 
 def execute_read_query(connection, query, flag=1, data=None):
+    """
+    Collects data from database which match to given query
+
+    :param connection: connection to database
+    :param query: string of query to execute
+    :param flag: switch, 1 - get list of the matching rows,
+                         0 - retrieve a single matching row
+    :param data: dict of additional data to paste in query
+    :return: depending on :param flag: matching query data
+    """
+
     cursor = connection.cursor()
     result = None
 

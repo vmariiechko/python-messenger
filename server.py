@@ -46,17 +46,26 @@ connection.close()
 
 @app.route("/")
 def hello():
+    """Prints hello message in root route."""
+
     return "<h1>My First Python Program</h1>"
 
 
 @app.route("/status")
 def status(*args):
     """
-    Print server status, time, users amount & messages amount
+    Calculates server time, amount of users, online users & messages.
 
-    request: -
-    response: -
+    :return: dict of all calculated data
+    :rtype: {
+        "status": bool,
+        "time": str,
+        "users_count": int,
+        "messages_count": int,
+        "users_online": int
+    }
     """
+
     connection = create_connection("data.sqlite3")
 
     select_users_count = "SELECT Count(*) FROM users"
@@ -80,16 +89,18 @@ def status(*args):
 @app.route("/get_messages")
 def get_messages():
     """
-    Receive messages after point of time
+    Collects new messages after specified point of time.
 
-    request: ?after=1234567890.4
-    response: {
+    :request: ?after=1234567890.4 - point of time
+    :return: new messages after specified point
+    :rtype: {
         "messages": [
             {"username": str, "text": str, "time": float},
             ...
         ]
     }
     """
+
     after_time = float(request.args['after'])
     new_messages = []
 
@@ -112,14 +123,16 @@ def get_messages():
 @app.route("/send_message", methods=['POST'])
 def send_message():
     """
-    Send message on server
+    Stores the message, time of sending and username of author in database.
 
-    request: {
+    :request: {
         "username": str,
         "text": str
     }
-    response: {"ok": bool}
+    :return: dict of execution status
+    :rtype: {"ok": bool}
     """
+
     data = request.json
     username = data["username"]
     text = data["text"]
@@ -141,17 +154,20 @@ def send_message():
 @app.route("/auth", methods=['POST'])
 def auth_user():
     """
-    Authentificate User
+    Verifies user exists, password matches and whether user is banned.
 
     request: {
         "username": str,
         "password": str
     }
-    response: {
+    :return: dict of execution status
+    :rtype: {
         "exist": bool,
-        "match": bool
+        "match": bool,
+        "banned": bool
     }
     """
+
     username = request.authorization.username
     password = request.authorization.password
 
@@ -186,18 +202,24 @@ def auth_user():
 @app.route("/sign_up", methods=['POST'])
 def sign_up_user():
     """
-    Register User
+    Register user.
+
+    Confirms whether login and password are in range and whether user exist.
+    Hashes and encrypts password using :func:`codec`.
+    Stores user's data in database.
 
     request: {
         "username": str,
         "password": str
     }
-    response: {
+    :return: dict of execution status
+    :rtype: {
         "login_out_of_range": bool,
         "password_out_of_range": bool,
         "ok": bool
     }
     """
+
     username = request.authorization.username
     password = request.authorization.password
 
@@ -231,17 +253,19 @@ def sign_up_user():
 @app.route("/command", methods=['POST'])
 def execute_command():
     """
-    Execute command
+    Executes command.
 
     request: {
-        "username": str
+        "username": str,
         "command": str
     }
-    response: {
+    :return: dict of execution status and output of command
+    :rtype: {
         "ok": bool,
         "output": str
     }
     """
+
     username = request.json["username"]
     cmd_with_args = request.json["command"]
 
@@ -277,15 +301,15 @@ def execute_command():
 @app.route("/logout", methods=['POST'])
 def logout_user():
     """
-    Mark that user loged out
+    Marks that user logged out.
 
     request: {
         "username": str
     }
-    response: {
-        "ok": bool
-    }
+    :return: dict of execution status
+    :rtype: {"ok": bool}
     """
+
     username = request.json["username"]
 
     if username:
