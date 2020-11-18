@@ -57,7 +57,7 @@ admin_server_commands = [
 ]
 
 
-def check_permissions(username):
+def get_permissions(username):
     """
     Checks on user's permissions.
 
@@ -87,7 +87,7 @@ def help_client(username):
     :return: list of dicts with available commands due to the permissions
     """
 
-    role = check_permissions(username)
+    role = get_permissions(username)
 
     if not role:
         return None
@@ -124,7 +124,7 @@ def myself(username, *args):
     return query_data
 
 
-def online(username, args=None):
+def get_online(username, args=None):
     """
     Checks if there're online users.
 
@@ -155,7 +155,7 @@ def online(username, args=None):
     return query_data
 
 
-def registered(*args):
+def get_registered(*args):
     """
     Queries all registered users.
 
@@ -189,20 +189,23 @@ def ban(username, args, flag=1):
     }
     """
 
-    role = check_permissions(username)
+    # Verify executer of permissions.
+    role = get_permissions(username)
     if not role:
         return {'ok': False, 'result': "User doesn't exist"}
     elif role[0] not in (2, 3):
         return {'ok': False, 'result': "You don't have permissions"}
 
-    all_usernames = registered()
+    all_usernames = get_registered()
     all_usernames = sum(all_usernames, ())
 
+    # Find unregistered users.
     if not all(username in all_usernames for username in args):
         return {'ok': False, 'result': 'Not all users exist'}
 
     connection = create_connection("data.sqlite3")
 
+    # Ban user.
     if flag:
         ban_users = f"UPDATE users " \
                     f"SET is_banned = 1 " \
@@ -211,6 +214,7 @@ def ban(username, args, flag=1):
         execute_query(connection, ban_users, args)
         result = 'Only users were banned<br>'
 
+    # Unban user.
     else:
         unban_users = f"UPDATE users " \
                       f"SET is_banned = 0 " \
@@ -228,7 +232,7 @@ def unban(username, args):
     return ban(username, args, 0)
 
 
-def role(username, args):
+def change_role(username, args):
     """
     Changes role for specified user.
 
@@ -246,7 +250,8 @@ def role(username, args):
     }
     """
 
-    role = check_permissions(username)
+    # Verify executer of permissions.
+    role = get_permissions(username)
     if not role:
         return {'ok': False, 'result': "User doesn't exist"}
     elif role[0] not in (2, 3):
@@ -254,20 +259,23 @@ def role(username, args):
 
     permission = args[-1]
 
+    # Validate command syntax.
     if permission not in ('1', '2', '3'):
         return {'ok': False, 'result': "Role isn't specified"}
     elif len(args) != 2:
         return {'ok': False, 'result': "Enter username"}
 
-    all_usernames = registered()
+    all_usernames = get_registered()
     user = args[0]
 
+    # Find unregistered users.
     if user not in [usernames[0] for usernames in all_usernames]:
         return {'ok': False, 'result': f"{user} doesn't exist"}
 
     if user == username:
         return {'ok': False, 'result': "It's not allowed to change permissions for yourself"}
 
+    # Change role.
     connection = create_connection("data.sqlite3")
 
     data_dict = {'permission': permission, 'username': user}

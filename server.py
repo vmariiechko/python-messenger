@@ -32,11 +32,11 @@ queries = {
 
 available_commands = {'help': help_client,
                       'myself': myself,
-                      'online': online,
-                      'reg': registered,
+                      'online': get_online,
+                      'reg': get_registered,
                       'ban': ban,
                       'unban': unban,
-                      'role': role}
+                      'role': change_role}
 
 connection = create_connection("data.sqlite3")
 execute_query(connection, queries['create_users_table'])
@@ -74,7 +74,7 @@ def status(*args):
     select_messages_count = "SELECT Count(*) FROM messages"
     messages_count = execute_read_query(connection, select_messages_count, 0)
 
-    users_online = len(online(None, None))
+    users_online = len(get_online(None, None))
 
     connection.close()
     return {
@@ -112,8 +112,9 @@ def get_messages():
                       f"WHERE m.time > :after"
     query_data = execute_read_query(connection, select_messages, 1, {'after': after_time})
 
-    for item in query_data:
-        message = {'username': item[2], 'text': item[0], 'time': item[1]}
+    # Generate messages.
+    for data in query_data:
+        message = {'username': data[2], 'text': data[0], 'time': data[1]}
         new_messages.append(message)
 
     connection.close()
@@ -180,12 +181,15 @@ def auth_user():
         connection.close()
         return {'exist': False}
 
+    # Decrypt password hash.
     password_hash = codec(query_data[0], 0)
 
+    # Compare entered password and hash from database.
     if not check_password(password.encode(), password_hash):
         connection.close()
         return {'exist': True, 'match': False}
 
+    # Check if user is banned.
     elif query_data[1] == 1:
         connection.close()
         return {'exist': True, 'match': True, 'banned': True}
@@ -223,6 +227,7 @@ def sign_up_user():
     username = request.authorization.username
     password = request.authorization.password
 
+    # Make sure credentials are in range.
     if len(username) not in range(4, 20, 1):
         return {"login_out_of_range": True}
     elif len(password) not in range(4, 20, 1):
@@ -233,6 +238,7 @@ def sign_up_user():
     select_user = f"SELECT id FROM users WHERE username LIKE :username"
     query_data = execute_read_query(connection, select_user, 0, {'username': username})
 
+    # If user isn't registered, encrypt password and store in database.
     if query_data is None:
         password_hash = codec(password, 1)
         password_hash = Binary(password_hash)
@@ -271,9 +277,11 @@ def execute_command():
 
     cmd_with_args = cmd_with_args.split()
 
+    # Separate command from arguments.
     command_name = cmd_with_args[0]
     args = cmd_with_args[1:] if len(cmd_with_args) > 1 else None
 
+    # Execute command with user permissions.
     if command_name in [cmd['name'] for cmd in user_server_commands]:
         command_func = available_commands.get(command_name)
 
@@ -284,6 +292,7 @@ def execute_command():
 
         return {'ok': True, 'output': output}
 
+    # Execute command with moderator/admin permissions.
     elif command_name in [cmd['name'] for cmd in moderator_server_commands + admin_server_commands]:
         if not args:
             return {'ok': False, 'output': 'Argument must be specified'}

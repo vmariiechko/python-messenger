@@ -19,6 +19,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
     The messenger object acts as the main object and is managed by client.
 
     Shows UI and is responsible for UX.
+    UI is separated on 3 main parts, which have their indexes: 0 - Login form, 1 - Registration form, 2 - Chat.
     Every 5 seconds requests server status.
     Every second shows new messages, if user logged in.
     Under main label "Python Messenger" there is server status, which displays whether server is working,
@@ -56,10 +57,12 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         self.password_line2 = PasswordEdit(True, self.registration_page)
         self.modify_password_lines()
 
+        # Connect buttons to the methods.
         self.send_button.pressed.connect(self.send)
         self.sign_up_button.pressed.connect(self.sign_up_user)
         self.login_button.pressed.connect(self.login_user)
 
+        # Connect actions to the methods.
         self.action_shortcuts.triggered.connect(self.show_shortcuts_box)
         self.action_commands.triggered.connect(self.show_commands_box)
         self.action_about.triggered.connect(self.show_about_box)
@@ -68,6 +71,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         self.action_logout.triggered.connect(self.logout)
         self.action_close.triggered.connect(self.close)
 
+        # Filter shortcuts and text overflow.
         self.plain_text_edit.installEventFilter(self)
 
         self.username = None
@@ -76,10 +80,12 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         self.max_text_len = 250
         self.server_IP = '127.0.0.1:5000'
 
+        # Load client content.
         self.message_style = get_message_style()
         self.warning_messages = get_warning_messages()
         self.message_box_text = get_message_box_text()
 
+        # Load commands.
         self.client_commands = get_client_commands()
         self.run_client_command = {'close': self.close,
                                    'logout': self.logout,
@@ -140,6 +146,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         reply = QMessageBox.question(self, 'Quit', self.message_box_text["close"],
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
 
+        # User closes the messenger and is logged in.
         if reply == QMessageBox.Yes and self.stacked_widget.currentIndex() == 2:
             try:
                 post(
@@ -151,6 +158,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
 
             event.accept()
 
+        # User closes the messenger and is logged out.
         elif reply == QMessageBox.Yes:
             event.accept()
 
@@ -292,13 +300,16 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         Sends request to sign up user.
         """
 
+        # Clear registration form.
         self.login_error2.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.password_error2.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.login_line2.setStyleSheet("border: 1px solid #B8B5B2")
         self.password_line2.setStyleSheet("border: 1px solid #B8B5B2")
+
         self.username = self.login_line2.text()
         self.password = self.password_line2.text()
 
+        # Check that form isn't empty.
         if not self.username:
             if not self.password:
                 self.login_error2.setText(self.translate("Messenger", self.warning_messages['login_required']))
@@ -333,6 +344,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
             self.clear_credentials()
             return
 
+        # Process bad request.
         if response.json()['login_out_of_range']:
             self.login_error2.setText(self.translate("Messenger", self.warning_messages['login_out_of_range']))
             self.login_error2.adjustSize()
@@ -359,13 +371,16 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         Sends request to authenticate user.
         """
 
+        # Clear login form.
         self.login_error1.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.password_error1.setText(self.translate("Messenger", self.warning_messages['empty_str']))
         self.login_line1.setStyleSheet("border: 1px solid #B8B5B2")
         self.password_line1.setStyleSheet("border: 1px solid #B8B5B2")
+
         self.username = self.login_line1.text()
         self.password = self.password_line1.text()
 
+        # Check that form isn't empty.
         if not self.username:
             if not self.password:
                 self.login_error1.setText(self.translate("Messenger", self.warning_messages['login_required']))
@@ -394,6 +409,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
             self.clear_credentials()
             return
 
+        # Process bad request.
         if not response.json()['exist']:
             self.login_error1.setText(self.translate("Messenger", self.warning_messages['invalid_login']))
             self.login_line1.setStyleSheet("border: 1px solid red")
@@ -429,6 +445,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
 
         self.server_commands = response.json()['output']
 
+        # Connect command name with function.
         for cmd in self.server_commands:
             if cmd['name'] != 'help': self.run_server_command[f"{cmd['name']}"] = globals()[cmd['name']]
 
@@ -440,6 +457,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         text = self.plain_text_edit.toPlainText()
         text = text.strip()
 
+        # Validate text don't execute HTML.
         text = text.replace('</', '')
         text = text.replace('<', '')
         text = text.replace('>', '')
@@ -489,17 +507,20 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         command = cmd_string.split()[0]
         args = cmd_string.split()[1:] if len(cmd_string) > 1 else None
 
+        # Run client-side command.
         if command in [cmd['name'] for cmd in self.client_commands]:
             self.run_client_command.get(command)()
             self.plain_text_edit.clear()
             return
 
+        # Invalid command name.
         elif command not in [cmd['name'] for cmd in self.server_commands]:
             self.show_text(f"<b>Error:</b> Command '/{command}' not found.<br>"
                            f"Try '/help' to list all available commands :)<br>")
             self.plain_text_edit.clear()
             return
 
+        # Process 'help' command.
         elif command == 'help':
             output = help_client(self.client_commands, self.server_commands, args)
             self.show_text(output)
@@ -521,6 +542,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
             self.plain_text_edit.clear()
             return
 
+        # Assign command function & run it with output from server.
         run_command = self.run_server_command.get(command)
         output = run_command(response.json()['output'], args)
 
@@ -546,11 +568,13 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
             self.show_server_off_box()
             return
 
+        # Generate message.
         for message in data['messages']:
-            # float -> datetime
+            # float -> datetime.
             beauty_time = datetime.fromtimestamp(message['time'])
             beauty_time = beauty_time.strftime('%d/%m %H:%M:%S')
 
+            # User will see his messages from the right side.
             if message['username'] == self.username:
                 self.show_text(self.message_style['begin'] + beauty_time + ' ' + message['username']
                                + self.message_style['middle'] + message['text'] + self.message_style['end'])
@@ -573,6 +597,8 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
                 verify=False
             )
             status = response.json()
+
+        # Server is off.
         except exceptions.RequestException as e:
             self.server_status.setText(self.translate("Messenger", '<p style="font-size:12px">'
                                                                     '<img src="images/server-is-off.png"> Offline</p>'))
@@ -581,6 +607,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
             self.server_status.setToolTip(tool_tip)
             return
 
+        # Server is on.
         self.server_status.setText(self.translate("Messenger", '<p style="font-size:12px">'
                                                                 '<img src="images/server-is-on.png"> Online</p>'))
         tool_tip = f"Server is working<br>" \
