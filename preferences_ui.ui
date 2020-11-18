@@ -52,9 +52,6 @@
    <property name="toolTip">
     <string/>
    </property>
-   <property name="statusTip">
-    <string>Enter IP</string>
-   </property>
    <property name="inputMask">
     <string>999.999.999.999:9999</string>
    </property>
@@ -63,9 +60,6 @@
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
-   </property>
-   <property name="placeholderText">
-    <string>Enter Server IP</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
