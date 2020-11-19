@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-sys.path.append("../..")
+sys.path.append("../../messenger/client")
 
 from style_sheet import load_stylesheet
 

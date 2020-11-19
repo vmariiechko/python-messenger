@@ -1,18 +1,18 @@
 import sys
 import unittest
 
-sys.path.append("../..")
+sys.path.append("../../messenger/server")
 
 from server_commands import *
 
 
 class TestServerCommands(unittest.TestCase):
 
-    def test_check_permissions(self):
-        self.assertEqual(check_permissions('Marik'), (3,))
-        self.assertEqual(check_permissions('Admin'), (2,))
-        self.assertEqual(check_permissions('User'), (1,))
-        self.assertIsNone(check_permissions('NotExist'))
+    def test_get_permissions(self):
+        self.assertEqual(get_permissions('Marik'), (3,))
+        self.assertEqual(get_permissions('Admin'), (2,))
+        self.assertEqual(get_permissions('User'), (1,))
+        self.assertIsNone(get_permissions('NotExist'))
 
     def test_help_client(self):
         self.assertEqual(help_client('Marik'), user_server_commands + moderator_server_commands + admin_server_commands)
@@ -26,12 +26,12 @@ class TestServerCommands(unittest.TestCase):
         self.assertEqual(myself('User'), (2, 1, 1589917631, 1602174729))
         self.assertIsNone(myself('NotExist'))
 
-    def test_online(self):
-        self.assertEqual(online('Marik'), [])
-        self.assertEqual(online('NotExist'), [])
+    def test_get_online(self):
+        self.assertEqual(get_online('Marik'), [])
+        self.assertEqual(get_online('NotExist'), [])
 
-    def test_registered(self):
-        users_count = len(sum(registered('Marik'), ()))
+    def test_get_registered(self):
+        users_count = len(sum(get_registered('Marik'), ()))
         self.assertEqual(users_count, 29)
 
     def test_ban(self):
@@ -48,14 +48,15 @@ class TestServerCommands(unittest.TestCase):
 
         self.assertEqual(unban('Marik', ['Test1', 'Test2'])['result'], "Users were unbanned<br>")
 
-    def test_role(self):
-        self.assertEqual(role('NotExist', ['User', '2'])['result'], "User doesn't exist")
-        self.assertEqual(role('User', ['User', '2'])['result'], "You don't have permissions")
-        self.assertEqual(role('Marik', ['User', '4'])['result'], "Role isn't specified")
-        self.assertEqual(role('Marik', ['2'])['result'], "Enter username")
-        self.assertEqual(role('Marik', ['NotExist', '2'])['result'], "NotExist doesn't exist")
-        self.assertEqual(role('Marik', ['Marik', '1'])['result'], "It's not allowed to change permissions for yourself")
-        self.assertEqual(role('Marik', ['User', '1'])['result'], "'s permissions was updated successfully<br>")
+    def test_change_role(self):
+        self.assertEqual(change_role('NotExist', ['User', '2'])['result'], "User doesn't exist")
+        self.assertEqual(change_role('User', ['User', '2'])['result'], "You don't have permissions")
+        self.assertEqual(change_role('Marik', ['User', '4'])['result'], "Role isn't specified")
+        self.assertEqual(change_role('Marik', ['2'])['result'], "Enter username")
+        self.assertEqual(change_role('Marik', ['NotExist', '2'])['result'], "NotExist doesn't exist")
+        self.assertEqual(change_role('Marik', ['Marik', '1'])['result'], "It's not allowed to change permissions for "
+                                                                         "yourself")
+        self.assertEqual(change_role('Marik', ['User', '1'])['result'], "'s permissions was updated successfully<br>")
 
 
 if __name__ == '__main__':

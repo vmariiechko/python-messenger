@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-sys.path.append("../..")
+sys.path.append("../../messenger/client")
 
 from client_commands import *
 

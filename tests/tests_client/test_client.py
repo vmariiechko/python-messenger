@@ -3,15 +3,15 @@ import unittest
 from PyQt5.QtTest import QTest
 from PyQt5.QtCore import Qt
 
-sys.path.append("../..")
+sys.path.append("../../messenger/client")
 
-from messenger import MessengerWindow
+from messenger import Messenger
 
 
 class TestClient(unittest.TestCase):
 
     def setUp(self):
-        self.messenger = MessengerWindow()
+        self.messenger = Messenger()
         self.login_error = '<span style=" font-style:italic; color:#ffffff;">Login is required</span>'
         self.password_error = '<span style=" font-style:italic; color:#ffffff;">Password is required</span>'
 

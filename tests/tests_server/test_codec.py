@@ -2,18 +2,12 @@ from sys import path
 from os import remove
 import unittest
 
-path.append("../..")
+path.append("../../messenger/server")
 
 from codec import *
 
 
 class TestCodec(unittest.TestCase):
-
-    def setUp(self):
-        generate_key()
-
-    def tearDown(self):
-        remove('../key')
 
     def test_codec(self):
         encrypted_hash = codec("123", 1)
