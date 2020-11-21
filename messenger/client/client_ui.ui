@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>Images/Icon.png</normaloff>Images/Icon.png</iconset>
+    <normaloff>images/Icon.png</normaloff>images/Icon.png</iconset>
   </property>
   <widget class="QWidget" name="central_widget">
    <widget class="QStackedWidget" name="stacked_widget">

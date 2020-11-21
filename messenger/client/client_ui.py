@@ -15,7 +15,7 @@ class Ui_Messenger(object):
         Messenger.setObjectName("Messenger")
         Messenger.resize(410, 610)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("Images/Icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("images/Icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Messenger.setWindowIcon(icon)
         self.central_widget = QtWidgets.QWidget(Messenger)
         self.central_widget.setObjectName("central_widget")
