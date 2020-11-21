@@ -1,6 +1,6 @@
 from threading import Timer
 
-from database import *
+from database import (create_connection, execute_query, execute_read_query)
 
 
 def messages_overflow():

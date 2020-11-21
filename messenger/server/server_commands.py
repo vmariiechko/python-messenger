@@ -1,4 +1,4 @@
-from database import *
+from database import (create_connection, execute_query, execute_read_query)
 
 select_queries = {
     'select_all_usernames': """SELECT username FROM users""",

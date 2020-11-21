@@ -1,4 +1,4 @@
-from PyQt5.QtCore import *
+from PyQt5.QtCore import pyqtSignal, QObject, QEvent
 
 
 def clickable(widget):

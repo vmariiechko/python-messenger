@@ -132,7 +132,7 @@ def status(status, args):
     :return:  HTML server content
     """
 
-    return f"############ <b>Server Status</b> ############<br>" \
+    return f"############ <b>Server Status</b> ###########<br>" \
            f"Server date&time: {status['time']}<br>" \
            f"Registered users: {status['users_count']}<br>" \
            f"Written messages: {status['messages_count']}<br>" \

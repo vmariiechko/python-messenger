@@ -6,8 +6,8 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QFont
 from qtwidgets import PasswordEdit
 
-from client_commands import *
-from client_content import *
+from client_commands import (help_client, online, status, myself, reg, role, ban, unban)
+from client_content import (get_warning_messages, get_client_commands, get_message_box_text, get_message_style)
 from click_label import clickable
 from client_ui import Ui_Messenger
 from preferences import Preferences

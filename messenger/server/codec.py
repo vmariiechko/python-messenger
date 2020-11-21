@@ -1,4 +1,5 @@
 from os import path
+
 from bcrypt import hashpw, checkpw, gensalt
 from cryptography.fernet import Fernet
 
