@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlite3 import Binary
+from sys import argv
 
 from flask import Flask, request
 
@@ -39,9 +40,24 @@ available_commands = {'help': help_client,
                       'unban': unban,
                       'role': change_role}
 
+# Create database, if not created
 connection = create_connection("data.sqlite3")
 execute_query(connection, queries['create_users_table'])
 execute_query(connection, queries['create_messages_table'])
+
+# Create administrator, if the server was run with arguments [username] [password]
+if len(argv) == 3:
+    password_hash = codec(argv[2], 1)
+    password_hash = Binary(password_hash)
+
+    data_dict = {'username': argv[1], 'password_hash': password_hash}
+    create_admin = f"INSERT INTO users (username, password_hash, role, registered)" \
+                   f"VALUES (:username, :password_hash, 3, strftime('%s','now'))"
+    execute_query(connection, create_admin, data_dict)
+else:
+    print("ATTENTION: You haven't specified 2 additional arguments: [username] [password]\n"
+          "An account with administrator role wasn't created\n")
+
 connection.close()
 
 

@@ -257,7 +257,7 @@ def change_role(username, args):
     elif role[0] not in (2, 3):
         return {'ok': False, 'result': "You don't have permissions"}
 
-    permission = args[-1]
+    permission = args[1]
 
     # Validate command syntax.
     if permission not in ('1', '2', '3'):
