@@ -352,4 +352,4 @@ def logout_user():
 
 
 available_commands['status'] = status
-app.run()
+app.run(host="0.0.0.0", port=9000)

@@ -20,4 +20,4 @@ class Preferences(QDialog, Ui_Preferences):
     def reset(self):
         """Sets server IP address to default value."""
 
-        self.server_IP.setText("127.0.0.1:5000")
+        self.server_IP.setText("0.0.0.0:9000")

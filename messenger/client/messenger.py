@@ -78,7 +78,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         self.password = None
         self.last_message_time = 0
         self.max_text_len = 250
-        self.server_IP = '127.0.0.1:5000'
+        self.server_IP = '0.0.0.0:9000'
 
         # Load client content.
         self.message_style = get_message_style()
