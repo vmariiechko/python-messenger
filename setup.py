@@ -13,6 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/marik348/python-messegner",
     packages=find_packages(),
+    include_package_data=True,
     classifiers=[
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3.8",
