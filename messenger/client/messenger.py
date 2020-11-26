@@ -588,9 +588,6 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
     def get_status(self):
         """Sends request to get server status."""
 
-        if self.stacked_widget.currentIndex() == 2:
-            return
-
         try:
             response = get(
                 f'http://{self.server_IP}/status',
@@ -602,8 +599,8 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         except exceptions.RequestException as e:
             self.server_status.setText(self.translate("Messenger", '<p style="font-size:12px">'
                                                                     '<img src="images/server-is-off.png"> Offline</p>'))
-            tool_tip = f"Server isn't working<br>" \
-                       f"For more information please contact with developer using 'Contacts' tab in 'Help' menu above"
+            tool_tip = f"Can't connect to the server<br>" \
+                       f"Maybe server isn't run or you've entered an invalid IP address in Preferences"
             self.server_status.setToolTip(tool_tip)
             return
 
