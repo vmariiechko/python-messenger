@@ -394,7 +394,7 @@ p, li { white-space: pre-wrap; }
     <string>Logout from account</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string>Alt+G</string>
    </property>
   </action>
   <action name="action_contacts">

@@ -200,7 +200,7 @@ class Ui_Messenger(object):
         self.action_close.setShortcut(_translate("Messenger", "Alt+E"))
         self.action_logout.setText(_translate("Messenger", "Logout"))
         self.action_logout.setStatusTip(_translate("Messenger", "Logout from account"))
-        self.action_logout.setShortcut(_translate("Messenger", "Ctrl+G"))
+        self.action_logout.setShortcut(_translate("Messenger", "Alt+G"))
         self.action_contacts.setText(_translate("Messenger", "Contacts"))
         self.action_preferences.setText(_translate("Messenger", "Preferences"))
 
