@@ -17,10 +17,10 @@ def codec(password, flag):
     :return: encrypted / decrypted byte string
     """
 
-    if not path.exists('../../key'):
+    if not path.exists('../../key.txt'):
         key = generate_key()
     else:
-        with open('../../key', 'rb') as file:
+        with open('../../key.txt', 'rb') as file:
             key = file.read()
 
     cipher_suite = Fernet(key)
@@ -42,7 +42,7 @@ def generate_key():
 
     key = Fernet.generate_key()
 
-    with open('../../key', 'wb') as file:
+    with open('../../key.txt', 'wb') as file:
         file.write(key)
 
     return key

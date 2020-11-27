@@ -2,4 +2,8 @@ include README.md
 include LICENSE.txt
 include requirements.txt
 graft tests
+graft messenger
+exclude key.txt
 global-exclude __pycache__
+global-exclude *.sqlite3
+
