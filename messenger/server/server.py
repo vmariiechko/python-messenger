@@ -4,7 +4,7 @@ from sys import argv
 
 from flask import Flask, request
 
-# import messages_overflow
+import messages_overflow
 from server_commands import (user_server_commands, moderator_server_commands, admin_server_commands,
                              help_client, myself, get_online, get_registered, ban, unban, change_role)
 from database import (create_connection, execute_query, execute_read_query)

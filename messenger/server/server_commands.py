@@ -257,13 +257,16 @@ def change_role(username, args):
     elif role[0] not in (2, 3):
         return {'ok': False, 'result': "You don't have permissions"}
 
+    # Verify amount of arguments
+    if len(args) != 2:
+        return {'ok': False, 'result': "Invalid number of arguments.<br>"
+                                       "Type '/help role' to see specification<br>"}
+
     permission = args[1]
 
     # Validate command syntax.
     if permission not in ('1', '2', '3'):
         return {'ok': False, 'result': "Role isn't specified"}
-    elif len(args) != 2:
-        return {'ok': False, 'result': "Enter username"}
 
     all_usernames = get_registered()
     user = args[0]
