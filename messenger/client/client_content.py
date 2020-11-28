@@ -53,11 +53,11 @@ def get_message_box_text():
                                 "<th>Description</th>" \
                             "</tr>" \
                             "<tr>" \
-                                "<td><code>Cntrl+S</code></td>" \
+                                "<td><code>Ctrl+S</code></td>" \
                                 "<td>Show available shortcuts</td>" \
                             "</tr>" \
                             "<tr>" \
-                                "<td><code>Cntrl+D</code></td>" \
+                                "<td><code>Ctrl+D</code></td>" \
                                 "<td>Show available commands</td>" \
                             "</tr>" \
                             "<tr>" \

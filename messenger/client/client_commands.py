@@ -150,7 +150,11 @@ def myself(myself, args):
     """
 
     myself[2] = datetime.fromtimestamp(myself[2]).strftime('%Y/%m/%d %H:%M:%S')
-    myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
+
+    if myself[3] == 0:
+        myself[3] = 'first entry'
+    else:
+        myself[3] = datetime.fromtimestamp(myself[3]).strftime('%Y/%m/%d %H:%M:%S')
 
     # Define what's name of role.
     if myself[1] == 3:
