@@ -61,7 +61,7 @@ def get_message_box_text():
                                 "<td>Show available commands</td>" \
                             "</tr>" \
                             "<tr>" \
-                                "<td><code>Cntrl+G</code></td>" \
+                                "<td><code>Alt+G</code></td>" \
                                 "<td>Logout from accout</td>" \
                             "</tr>" \
                             "<tr>" \
