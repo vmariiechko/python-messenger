@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="python_messenger",
+    name="py-messenger",
     version="1.2.0",
     author="Vadym Mariiechko",
     author_email="vadimich348@gmail.com",
@@ -16,11 +16,11 @@ setup(
     include_package_data=True,
     classifiers=[
         "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
     ],
-    python_requires='>=3.8, <4',
+    python_requires='>=3.6, <4',
     keywords="messenger, chat",
 )
