@@ -192,6 +192,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
             self.clear_user_data()
             self.action_logout.setEnabled(False)
             self.action_commands.setEnabled(False)
+            self.action_preferences.setEnabled(True)
         else:
             return
 
@@ -252,6 +253,7 @@ class Messenger(QtWidgets.QMainWindow, Ui_Messenger):
         self.stacked_widget.setCurrentIndex(2)
         self.action_logout.setEnabled(True)
         self.action_commands.setEnabled(True)
+        self.action_preferences.setEnabled(False)
         self.plain_text_edit.setFocus()
         self.clear_credentials()
 
