@@ -120,13 +120,13 @@ without the ability to change the IP address in Preferences.
 * Cross-platform
   - Windows and Linux ready
 
-#### There are 3 roles in messenger:
+### There are 3 roles in messenger:
 
 - **User:** Has standard commands
 - **Moderator:** The above + permissions to ban/unban users
 - **Administrator:** All the above + the ability to change the role of the user
 
-#### Available user commands:
+### Available user commands:
 
 COMMAND | VARIABLES | DESCRIPTION
 --------|-----------|--------------------------
@@ -139,14 +139,14 @@ COMMAND | VARIABLES | DESCRIPTION
 /online | [users]   | Prints online users or [users] status if specified
 /reg    |           | Prints registered users
 
-#### Available moderator commands:
+### Available moderator commands:
 
 COMMAND | VARIABLES  | DESCRIPTION
 --------|------------|--------------
 /ban    | [users]    | Bans [users]
 /unban  | [users]    | Unbans [users]
 
-#### Available administrator commands:
+### Available administrator commands:
 
 COMMAND | VARIABLES    | DESCRIPTION
 --------|--------------|--------------------
@@ -172,7 +172,7 @@ This project is licensed under the terms of the **MIT** license.
 [sqlite]: https://img.shields.io/badge/sqlite-%2307405e.svg?&style=for-the-badge&logo=sqlite&logoColor=white
 [pyqt]: https://img.shields.io/badge/pyqt5-%2341CD52.svg?&style=for-the-badge&logo=qt&logoColor=white
 [windows]: https://img.shields.io/badge/windows-0078D6?logo=windows&logoColor=white&style=for-the-badge
-[linux]: https://img.shields.io/badge/linux-%23FFFFFF?logo=linux&logoColor=black&style=for-the-badge
+[linux]: https://img.shields.io/badge/linux-%23d6d6d6?logo=linux&logoColor=black&style=for-the-badge
 [license]: https://img.shields.io/badge/license-MIT-%2341CD52.svg?&style=for-the-badge
 
 [pypi-url]: https://pypi.org/project/py-messenger/
@@ -183,9 +183,9 @@ This project is licensed under the terms of the **MIT** license.
 [linux-url]: https://linuxmint.com/
 [license-url]: https://github.com/marik348/python-messegner/blob/master/LICENSE.txt
 
-[demo-login]: https://i.imgur.com/Dn5xsd3.png
-[demo-preferences]: https://i.imgur.com/hI9zURT.png
-[demo-shortcuts]: https://i.imgur.com/UnpPYcX.png
-[demo-chat]: https://i.imgur.com/raWNTM0.png
+[demo-login]: https://i.imgur.com/TmN0v1t.png
+[demo-preferences]: https://i.imgur.com/znQcrxJ.png
+[demo-shortcuts]: https://i.imgur.com/xROErgP.png
+[demo-chat]: https://i.imgur.com/fYqpBCe.png
 
 [venv-url]: https://docs.python.org/3/tutorial/venv.html
