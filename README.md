@@ -10,7 +10,7 @@
 
 This is a python single-chat application separated on client-side and server-side.
 General-purpose of the project is to message between hosts in the local network.
-Additionally, you can [download](#download) a desktop app to access the global chat.
+Additionally, you can [download](#download) a desktop application in two versions.
 
 ![demo-login] ![demo-preferences]
 ![demo-shortcuts] &nbsp;&nbsp; ![demo-chat]
@@ -99,11 +99,15 @@ that's why it causes some UI problems on Windows.
 
 ## Download
 
-Get the executable desktop application with the ability to chat in a global network
-for Windows and Linux from [here](https://github.com/marik348/python-messegner/releases/tag/v1.2.0).
+There are two executable desktop versions with the ability to chat in the:
 
-The main difference between the interpreted python package and the executable 
-version is that the second one has the deployed server IP address by default
+1. local network
+2. global network
+
+Get them for Windows and Linux from [here](https://github.com/marik348/python-messegner/releases/tag/v1.2.0).
+
+The main difference between versions is that the second one
+has the deployed server IP address by default
 without the ability to change the IP address in Preferences.
 
 ---
