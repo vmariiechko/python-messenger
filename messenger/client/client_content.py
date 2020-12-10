@@ -80,7 +80,7 @@ def get_message_box_text():
                                  "Version: 1.2"
                                  "<br><br>",
                         "contacts": "Vadym Mariiechko:<br><br>"
-                                    "<a href='mailto:vadimich348@gmail.com'>vadimich348@gmail.com</a><br>"
+                                    "<a href='mailto:vmariiechko@gmail.com'>vmariiechko@gmail.com</a><br>"
                                     "LinkedIn: <a href='https://www.linkedin.com/in/mariiechko/'>mariiechko</a><br>"
                                     "GitHub: <a href='https://github.com/marik348'>marik348</a>",
                         "server_is_off": "The server is offline",
