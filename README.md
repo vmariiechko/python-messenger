@@ -166,7 +166,7 @@ This project is licensed under the terms of the **MIT** license.
 
 ---
 
-> Gmail [vadimich348@gmail.com](mailto:vadimich348@gmail.com) &nbsp;&middot;&nbsp;
+> Gmail [vmariiechko@gmail.com](mailto:vmariiechko@gmail.com) &nbsp;&middot;&nbsp;
 > GitHub [@marik348](https://github.com/marik348) &nbsp;&middot;&nbsp;
 > LinkedIn [@mariiechko](https://www.linkedin.com/in/mariiechko/)
 
