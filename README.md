@@ -34,7 +34,7 @@ installed on your computer:
 
 ```
 # Clone this repository
-$ git clone https://github.com/marik348/python-messegner
+$ git clone https://github.com/vmariiechko/python-messenger
 ```
 
 ---
@@ -104,7 +104,7 @@ There are two executable desktop versions with the ability to chat in the:
 1. local network
 2. global network
 
-Get them for Windows and Linux from [here](https://github.com/marik348/python-messegner/releases/tag/v1.2.0).
+Get them for Windows and Linux from [here](https://github.com/vmariiechko/python-messenger/releases/tag/v1.2.0).
 
 The main difference between versions is that the second one
 has the deployed server IP address by default
@@ -167,7 +167,7 @@ This project is licensed under the terms of the **MIT** license.
 ---
 
 > Gmail [vmariiechko@gmail.com](mailto:vmariiechko@gmail.com) &nbsp;&middot;&nbsp;
-> GitHub [@marik348](https://github.com/marik348) &nbsp;&middot;&nbsp;
+> GitHub [@vmariiechko](https://github.com/vmariiechko) &nbsp;&middot;&nbsp;
 > LinkedIn [@mariiechko](https://www.linkedin.com/in/mariiechko/)
 
 <!-- Markdown links and images -->
@@ -185,7 +185,7 @@ This project is licensed under the terms of the **MIT** license.
 [pyqt-url]: https://pypi.org/project/PyQt5/#description
 [windows-url]: https://www.microsoft.com/en-us/windows/
 [linux-url]: https://linuxmint.com/
-[license-url]: https://github.com/marik348/python-messegner/blob/master/LICENSE.txt
+[license-url]: https://github.com/vmariiechko/python-messenger/blob/master/LICENSE.txt
 
 [demo-login]: https://i.imgur.com/TmN0v1t.png
 [demo-preferences]: https://i.imgur.com/znQcrxJ.png
