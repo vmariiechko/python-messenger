@@ -18,4 +18,4 @@ qtwidgets==0.16
 requests==2.31.0
 six==1.14.0
 urllib3==1.26.18
-Werkzeug==3.0.1
+Werkzeug==3.0.3
