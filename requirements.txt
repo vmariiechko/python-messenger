@@ -15,7 +15,7 @@ PyQt5==5.14.2
 PyQt5-sip==12.7.2
 QtPy==1.9.0
 qtwidgets==0.16
-requests==2.31.0
+requests==2.32.0
 six==1.14.0
 urllib3==1.26.18
 Werkzeug==3.0.3
