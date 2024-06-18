@@ -17,5 +17,5 @@ QtPy==1.9.0
 qtwidgets==0.16
 requests==2.31.0
 six==1.14.0
-urllib3==1.26.18
+urllib3==1.26.19
 Werkzeug==3.0.3
