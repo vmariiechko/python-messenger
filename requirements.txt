@@ -6,7 +6,7 @@ click==7.1.1
 cryptography==42.0.4
 Flask==2.3.2
 helpdev==0.7.1
-idna==2.9
+idna==3.7
 itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
